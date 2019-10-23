@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+<script type="text/javascript" th:src="@{/js/JQuery-3.4.js}"></script>
+<script type="text/javascript" th:src="@{/js/index.js}"></script>
+<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/javascript">
+layui.use('layer', function() {
+  var layer = layui.layer;
+})
+</script>
+</head>
+<body>
+    <div class="layui-input-inline">
+		<input type="text" name="keyword" id="keyword" placeholder="请输入关键字"
+			class="layui-input-block">
+		<button type="button" class="layui-btn" onclick="find()">查询</button>
+	</div>
+	<div class="layui-input-inline">
+		<button type="button" class="layui-btn" onclick="add()">增加</button>
+	</div>
+	<div class="layui-input-inline">
+		<button class="layui-btn" id="getCheckData">批量删除</button>
+	</div>
+	
+	<table class="layui-hide" id="test" lay-filter="test"></table>
+	<script>
+		var keyword = $("#keyword").val();
+		layui.use('table', function() {
+			var table = layui.table;
+			table.render({
+				elem : '#test',
+				url : "/School/listSchool?&keyword=" + keyword + "",
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : true,
+				page : true,
+				cols : [ [
+					 {
+						    type:'checkbox'
+					 }
+					,{
+						field : 'sid',
+						title : '学校编号',
+						sort : true
+					}
+					, {
+						field : 'name',
+						title : '学校名称'
+					}
+					, {
+						field : 'author',
+						title : '学校负责人'
+					}
+					, {
+						field : 'tel',
+						title : '学校电话'
+					}
+					, {
+						field : 'province',
+						title : '所在省份'
+					}
+					, {
+						field : 'photopath',
+						title : '学校照片',
+						templet : '<div><img src="http://localhost/static/image/{{d.photopath}}"></div>'
+					}
+					
+					, {
+						fixed : 'right',
+						title : '操作',
+						toolbar : '#barDemo'
+					}
+				] ],
+				response : {
+					statusCode : 200 //重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.status, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.rows //解析数据列表
+					};
+				}
+			});
+			table.on('tool(test)', function(obj) {
+				if (obj.event == "edit") {
+					var data = obj.data; //
+					$.ajax({
+						type : "get",
+						url : "/School/findSchoolById",
+						data : {
+							sid : data.sid
+						},
+						dataType : "json",
+						success : function(data) {
+		                    window.location.href="/School/edit";
+						}
+					}) //ajax结束
+	
+					/* 	layui.use('layer', function() {
+						var layer = layui.layer;
+						layer.open({
+							type : 2,
+							content : '/CRUD/school_update.html', //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+							area : [ '80%', '80%' ],
+							offset : 'auto',
+							title : '更新信息'
+						});
+					}); //打开更新界面*/
+				} //if结束 
+				if(obj.event == "del"){
+				var data = obj.data; //
+				if(confirm("确定要删除吗？")){
+					$.ajax({
+						type : "get",
+						url : "/School/deleteSchool",
+						data : {
+							sid : data.sid
+						},
+						dataType : "json",
+						success : function(data) {
+						   layer.tips("删除成功");
+					   }
+					}) //ajax结束
+					window.location.reload();
+				 }
+				}//删除结束
+				
+			})
+			$("#getCheckData").click(function(){
+				var checkStatus = table.checkStatus('test');
+	            var ids=[];
+	            for(var x=0;x<checkStatus.data.length;x++){
+	              ids.push(checkStatus.data[x].sid);
+	            }
+				if(checkStatus.data.length==0||checkStatus.data.length==null){
+				    layer.msg('您还没有选择数据');
+				}else{
+				 $.ajax({
+					type : "get",
+					url : "School/deleteSchoolByIds",
+					traditional: true,
+					data : {
+							sids : ids
+							},
+					dataType : "json",
+					success : function(data) {
+						layer.tips("删除成功");
+			   			}
+			      }) //ajax结束
+			      window.location.reload();
+				}//else结束
+				
+			});
+		});
+	</script>
+   <script type="text/javascript">
+     $(function(){
+    	$.ajax({
+    		type : "get",
+    		url : "School/listAllProvince",
+    		data : {},
+    		dataType : "json",
+    		success : function(data) {}
+    	})
+     })
+   </script>
+
+
+</body>
+</html>

@@ -106,6 +106,12 @@
 			<version>1.1.12</version>
 		</dependency>
 		
+		<!-- fastdfs -->
+		<dependency>
+			<groupId>fastdfs_client</groupId>
+			<artifactId>fastdfs_client</artifactId>
+			<version>1.25</version>
+		</dependency>
 	</dependencies>
 
 	<build>

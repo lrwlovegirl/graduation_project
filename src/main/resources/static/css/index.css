@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+.layui-table-cell{
+	text-align:center;
+	height: auto;
+	white-space: normal;
+}
+.layui-table img{
+	max-width:150px
+}
