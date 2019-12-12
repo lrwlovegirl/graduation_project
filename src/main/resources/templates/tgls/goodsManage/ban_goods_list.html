@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ADi达斯网上商城</title>
+<!-- 公共样式 开始 -->
+<link rel="stylesheet" type="text/css" th:href="@{/css/base.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/iconfont.css}"/>
+<script type="text/javascript"
+	th:src="@{/framework/jquery-1.11.3.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{layui-1/css/layui.css}"/>
+<script type="text/javascript" th:src="@{/layui-1/layui.js}"></script>
+<!-- 滚动条插件 -->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/jquery.mCustomScrollbar.css}"/>
+<script th:src="@{/framework/jquery-ui-1.10.4.min.js}"></script>
+<script th:src="@{/framework/jquery.mousewheel.min.js}"></script>
+<script th:src="@{/framework/jquery.mCustomScrollbar.min.js}"></script>
+<script th:src="@{/framework/cframe.js}"></script>
+<!-- 仅供所有子页面使用 -->
+<!-- 公共样式 结束 -->
+<script th:src="@{/js/ItemOneJS.js}"></script>
+<script th:src="@{/js/back_goods_list.js}"></script>
+<script>
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form;
+})
+</script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">上架</a>	
+</script>
+
+</head>
+<body>
+	<table id="test" lay-filter="test"></table>
+	<script type="text/javascript">
+	    var keyword=$("#keyword").val();
+		layui.use('table', function() {
+			var table = layui.table;
+			table.render({
+				elem : '#test',
+				url : '/Goods/listBanGoods?keyword='+keyword,
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : false,
+				cols : [ [ {
+					type : 'checkbox'
+				}, {
+					field : 'gid',
+					title : '商品编号'
+				}, {
+					field : 'title',
+					title : '名称'
+				},
+				 {
+					field : 'ioid',
+					title : '一级分类'
+				},
+				{
+					field : 'itid',
+					title : '二级分类'
+				},
+				
+				{
+					field : 'note',
+					title : '商品介绍'
+				},
+				{
+					field : 'price',
+					title : '商品价格'
+				},
+				 {
+					field : 't_number',
+					title : '库存'
+				},
+				 {
+					field : 'regdate',
+					title : '上架日期'
+				},
+				 {
+					field : 'photo',
+					title : '照片',
+					templet :'<div><img src="{{d.photo}}"></div>'
+				},
+				{
+					title : '操作',
+					toolbar : '#barDemo'
+				}] ],
+				page : true,
+				response : {
+					statusCode : 200
+				//重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.code, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.data
+					//解析数据列表
+					};
+				}
+			});
+			table.on('tool(test)', function(obj) {
+				if (obj.event == "edit") {
+					var data = obj.data; //
+					  $.ajax({
+						type : "post",
+						url : "/Goods/findGoodsById",
+						data : {
+							gid : data.gid
+						},
+						dataType : "json",
+						success : function(data) {
+							if(data.msg=="操作成功"){
+								layer.open({//弹出层
+									  type: 2, 
+									  title: '商品信息',
+									  content: data.url ,
+									  area: ['80%', '80%']
+								}); 
+							}else{
+								layer.msg(data.msg);
+							}
+						}
+					})   
+				} //if结束 
+				if(obj.event == "del"){
+				var data = obj.data; //
+				layer.confirm('确定进行该操作么？', function(index){
+					$.ajax({
+						type : "post",
+						url : "/Goods/changeStatusToAllow",
+						data : {
+							gid : data.gid
+						},
+						dataType : "json",
+						success : function(data) {
+							 if(data.msg=="对不起,您没有权限"){
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index);
+							 }else{
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index); 
+									 setTimeout(function(){window.location.href=data.url;},1000);
+							 }
+					   }
+					}) //ajax结束
+			     });
+				}//删除结束
+			})
+		});
+	</script>
+<style type="text/css">
+.layui-table-cell{
+	text-align:center;
+	height: auto;
+	white-space: normal;
+}
+.layui-table img{
+	max-width:100px
+}
+</style>
+</body>
+</html>

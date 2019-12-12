@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.UserMapper">
+	<insert id="createUser" parameterType="com.lrw.vo.User">
+		 insert into User (username,password,level,birthday,email,sex,descrition,status,reason) 
+		 values (#{username},#{password},#{level},#{birthday},#{email},#{sex},#{descrition},#{status},#{reason});
+	</insert>
+	
+	<select id="findAllUser" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User">
+	  select * from User  
+	</select>
+	
+	<select id="findUserById" parameterType="int" resultType="com.lrw.vo.User">
+	  select * from User  where id=#{id}
+	</select>
+	
+	<select id="updateUser" parameterType="com.lrw.vo.User" >
+	   update User set username=#{username},email=#{email},sex=#{sex},level=#{level},status=#{status},descrition=#{descrition}
+	   where id=#{id}
+	</select>
+	
+	<select id="findUserStatusById" parameterType="int" resultType="int">
+	  select status from user where id=#{id}
+	</select>
+	
+	<update id="changeStatusToOk" >
+	    update User set status=0 where id in 
+	    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      		#{id}
+      </foreach>
+	</update>
+	
+	<update id="changeStatusToNotOk">
+	 update User set status=1 where id in 
+	    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      		#{id}
+      </foreach>
+	</update>
+	
+	
+	<select id="findAllOkUser" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User" >
+	     select * from User where status=0
+	</select>
+	
+	<select id="findAllNotOkUser" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User" >
+	     select * from User where status=1
+	</select>
+	
+	<select id="queryUserByKeyword" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User">
+	    select * from User 
+	    <if test="keyword!=null and keyword!='' ">
+         and  username like '%${keyword}%' or email  like '%${keyword}%' or sex like  '%${keyword}%' 
+         or birhday like '%${keyword}%'
+   </if>
+	</select>
+	
+	
+
+</mapper>  

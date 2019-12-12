@@ -1,0 +1,134 @@
+<!DOCTYPE HTML >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<title>ADi达斯网上商城</title>
+
+<!-- 公共样式 开始 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript"
+	th:src="@{../js/JQuery-3.4.js}"></script>
+<link rel="stylesheet" type="text/css"
+	th:href="@{../layui-1/css/layui.css}" />
+<script type="text/javascript" th:src="@{../layui-1/layui.js}"></script>
+<!-- 滚动条插件 -->
+<script th:src="@{../framework/jquery-ui-1.10.4.min.js}"></script>
+<script th:src="@{../framework/jquery.mousewheel.min.js}"></script>
+<script th:src="@{../framework/jquery.mCustomScrollbar.min.js}"></script>
+<script th:src="@{../framework/cframe.js}"></script>
+<!-- 仅供所有子页面使用 -->
+<!-- 公共样式 结束 -->
+<script th:src="@{../js/ItemOneJS.js}"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="find">查看</a>	
+</script>
+<script type="text/javascript">
+layui.use('layer', function(){
+ var layer = layui.layer;
+});              
+</script>
+</head>
+<body>
+	<table id="test" lay-filter="test"></table>
+	 <script type="text/javascript">
+	 layui.use('table', function() {
+			var table = layui.table;
+			table.render({
+				elem : '#test',
+				url : '/orders/listAllNoOrders',
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : false,
+				cols : [ [ 
+				 {
+				   type:'checkbox'
+				 }
+				,{
+					field : 'oid',
+					title : '订单编号',
+				}, {
+					field : 'username',
+					title : '购买人姓名',
+				}
+				, {
+					field : 'cdate',
+					title : '下单时间',
+				}
+				, {
+					field : 'telephone',
+					title : '联系电话',
+				}
+				, {
+					field : 'address',
+					title : '收货地址',
+				}
+				, {
+					field : 'oper',
+					title : '处理人',
+				}
+				, {
+					field : 'reason',
+					title : '拒绝原因',
+				}
+				,
+				{
+					fixed : 'right',
+					title : '操作',
+					toolbar : '#barDemo'
+				}
+				]],
+				page : true,
+				response : {
+					statusCode : 200
+				//重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.status, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.data
+					//解析数据列表
+					};
+				}
+			});
+			table.on('tool(test)', function(obj) {
+				if(obj.event == "see"){
+				var data = obj.data; //
+					$.ajax({
+						type : "post",
+						url : "/orders/findOrdersDetailsByOid",
+						data : {
+							oid : data.oid
+						},
+						dataType : "json",
+						success : function(data) {
+						}
+					}) //ajax结束
+			     };//删除结束
+			     if(obj.event == "find") {
+						var data = obj.data;
+						$.ajax({
+							type : "get",
+							url : "/orders/findOrdersDetailsByOid",
+							data : {
+								oid : data.oid
+							},
+							dataType : "json",
+							success : function(data) {
+								layer.open({//弹出层
+									  type: 2, 
+									  title: '订单详情',
+									  content: data.url ,
+									  area: ['80%', '80%']
+								}); 
+						   }
+						}) //ajax结束
+					}
+				})//监听结束
+		});
+	 </script>
+</body>
+
+
+</html>

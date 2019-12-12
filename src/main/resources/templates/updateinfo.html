@@ -1,0 +1,138 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'forgetpassword.jsp' starting page</title>
+    <link rel="stylesheet" type="text/css" href="css/managerlogin.css"/>
+	<script type="text/javascript" src="js/JQuery-3.4.js"></script>
+	<script type="text/javascript" src="js/forgetpassword.js"></script>
+
+  </head>
+  
+  <body>
+      <div id="all">
+			
+		
+		<div id="up">
+			<h2>* 个人中心</h2>	
+		</div>
+		<div id="center">
+			<div id="login">
+				<h3>| 个人信息</h3>
+				
+				<form action="member/updateMember.action" method="post"></p>
+				 <input type="hidden" name="usernamePlus" id="usernamePlus" value="${member.username}" >
+				          <p>用户名: <input type="text" name="username" id="username" value="${member.username}" onblur="checkusername(this.value)"><span id="sp3"></span></p>
+				          <p>密码: <input type="password"  name="password" id="password"></p>
+				          <p>邮箱: <input type="text"  name="email" value="${member.email}" onblur="checkEmail(this.value)"><span id="sp5"></span></p>
+				          
+			             <p><input type="submit" value="完成" class="but" id="sub"></p>
+     			 </form>
+				
+			</div>
+		</div>
+		<div id="buttom">
+				<div id="btop">
+					<a href="#"><img src="img/but.png"/></a>
+				</div>
+				<div id="bbut">
+					<table border="0px" cellspacing="0" cellpadding="0" id="tab">
+						<tr>
+							<th>产品</th>
+							<th>运动</th>
+							<th>帮助中心</th>
+							<th>网站政策</th>
+						</tr>
+						<tr>
+							<td><a href="#">鞋类</a></td>
+							<td><a href="#">跑步</a></td>
+							<td><a href="#">关于员工</a></td>
+							<td><a href="#">使用条款</a></td>
+						</tr>
+						<tr>
+							<td><a href="#">配件</a></td>
+							<td><a href="#">训练</a></td>
+							<td><a href="#">尺码表</a></td>
+							<td><a href="#">隐私声明</a></td>
+						</tr>
+						<tr>
+							<td><a href="#">最新上市</a></td>
+							<td><a href="#">足球</a></td>
+							<td><a href="#">adiCLUB会员</a></td>
+							<td><a href="#">物流配送规则</a></td>
+						</tr>
+						<tr>
+							<td><a href="#">新品发售日历</a></td>
+							<td><a href="#">篮球</a></td>
+							<td><a href="#">门店查询</a></td>
+							<td><a href="#">退换货规则</a></td>
+						</tr>
+						<tr>
+							<td><a href="#">限量发售</a></td>
+							<td><a href="#">户外</a></td>
+							<td><a href="#">关于我们</a></td>
+							<td><a href="#">下单指南</a></td>
+						</tr>
+					</table>
+					<div id="butt">
+						<a href="#"><img src="img/bbb.png"/></a>
+					</div>
+				</div>
+			</div>
+		<script type="text/javascript">
+		 function checkusername(a){
+	        var orname=$("#usernamePlus").val();
+			   if($("#username").val()==null||$("#username").val()==""){
+		   	    $("#sp3").html("<font color='red'>请输入用户名</font>");
+		      	}else{
+		   	   if(orname==$("#username").val()){
+		   	     $('#sub').removeAttribute("disabled");
+		   	   }else{
+		   	   $.ajax({ 
+		   			 type :"post", 
+		   			 url :"member/checkUsername.action", 
+		   			 contentType :"application/json;charset=utf-8", 
+		   			 dataType :"json",
+		   			 data :{username:$("#username").val()}, 
+		                success:function(data){
+		               	  if(data){
+		               	   $("#sp3").html("<font color='red'>用户名被注册啦</font>");
+		                   	 $('#sub').attr('disabled',"true");
+		                   	 }else{
+		                   	 $('#sub').removeAttribute("disabled");
+		                   	 }
+		               	
+		                }
+		   		 })
+		   	   }
+		     	
+   	}
+   	  
+   	
+}
+		</script>
+		<script type="text/javascript">
+		 //邮箱验证
+			 function checkEmail(str){
+				var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+				if(re.test(str)){
+					$("#sp5").html("<span style='color:green'>格式输入正确</span>")
+					 $('#sub').removeAttr("disabled");
+				}else{
+					$("#sp5").html("<span style='color:red'>邮箱输入不正确</span>")
+					$('#sub').attr('disabled',"true");
+				}
+			 }
+		</script>
+		
+		
+		</div>
+  </body>
+</html>

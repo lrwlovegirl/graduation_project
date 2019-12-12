@@ -1,0 +1,169 @@
+<!DOCTYPE HTML >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<title>ADi达斯网上商城</title>
+
+<!-- 公共样式 开始 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript"
+	th:src="@{../js/JQuery-3.4.js}"></script>
+<link rel="stylesheet" type="text/css"
+	th:href="@{../layui-1/css/layui.css}" />
+<script type="text/javascript" th:src="@{../layui-1/layui.js}"></script>
+<!-- 滚动条插件 -->
+<script th:src="@{../framework/jquery-ui-1.10.4.min.js}"></script>
+<script th:src="@{../framework/jquery.mousewheel.min.js}"></script>
+<script th:src="@{../framework/jquery.mCustomScrollbar.min.js}"></script>
+<script th:src="@{../framework/cframe.js}"></script>
+<!-- 仅供所有子页面使用 -->
+<!-- 公共样式 结束 -->
+<script th:src="@{../js/ItemOneJS.js}"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">解冻</a>	
+</script>
+<script type="text/javascript">
+layui.use('layer', function(){
+ var layer = layui.layer;
+});              
+</script>
+
+
+</head>
+<body>
+
+     <div class="layui-input-inline" >
+		<input type="text" name="keyword" id="keyword" placeholder="请输入关键字"
+			class="layui-input-block">
+		<button type="button" class="layui-btn" onclick="find()">查询</button>
+	</div>
+	
+    <div class="layui-input-inline">
+		<button class="layui-btn" id="getCheckData">批量解冻</button>
+	</div>
+	<table id="test" lay-filter="test"></table>
+	 <script type="text/javascript">
+	 layui.use('table', function() {
+			var table = layui.table;
+			table.render({
+				elem : '#test',
+				url : '/Member/listAllBanMember',
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : false,
+				cols : [ [ 
+				 {
+				   type:'checkbox'
+				 }
+				,{
+					field : 'mid',
+					title : 'ID',
+				}, {
+					field : 'username',
+					title : '用户名',
+				}
+				, {
+					field : 'email',
+					title : '邮箱',
+				}
+				, {
+					field : 'telephone',
+					title : '联系电话',
+				}
+				, {
+					field : 'birthday',
+					title : '注册日期',
+				}
+				, 
+				{
+					field : 'lastlogintime',
+					title : '上次登录日期',
+				},
+				{
+					fixed : 'right',
+					title : '操作',
+					toolbar : '#barDemo'
+				}
+				]],
+				page : true,
+				response : {
+					statusCode : 200
+				//重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.status, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.data
+					//解析数据列表
+					};
+				}
+			});
+			table.on('tool(test)', function(obj) {
+				
+				if(obj.event == "del"){
+				var data = obj.data; //
+				layer.confirm('确定进行该操作么？', function(index){
+					$.ajax({
+						type : "post",
+						url : "/Member/changeMemberStatusToAllow",
+						data : {
+							mid : data.mid
+						},
+						dataType : "json",
+						success : function(data) {
+							
+							 if(data.msg=="对不起,您没有权限"){
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index);
+							 }else{
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index); 
+									 setTimeout(function(){window.location.href=data.url;},1000);
+							 }
+							 
+						   
+					   }
+					}) //ajax结束
+			     });
+				}//删除结束
+			})
+			$("#getCheckData").click(function(){
+				var checkStatus = table.checkStatus('test');
+	            var ids=[];
+	            for(var x=0;x<checkStatus.data.length;x++){
+	              ids.push(checkStatus.data[x].mid);
+	            }
+				if(checkStatus.data.length==0||checkStatus.data.length==null){
+				    layer.msg('您还没有选择数据');
+				}else{
+				 $.ajax({
+					type : "get",
+					url : "/Member/changeMemberStatusToAllowByMids",
+					traditional: true,
+					data : {
+							mids : ids
+							},
+					dataType : "json",
+					success : function(data) {
+						layer.msg(data.msg, {
+					        time: 1000
+					      });
+					   setTimeout(function(){window.location.href=data.url;},1000)
+					}
+			      }) //ajax结束
+			     
+				}//else结束
+				
+			});
+		});
+	 </script>
+</body>
+
+
+</html>

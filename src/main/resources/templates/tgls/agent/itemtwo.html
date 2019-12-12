@@ -1,0 +1,155 @@
+<!DOCTYPE HTML >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ADi达斯网上商城</title>
+<!-- 公共样式 开始 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" th:src="@{../../js/JQuery-3.4.js}"></script>
+<link rel="stylesheet" type="text/css"
+	th:href="@{../../layui-1/css/layui.css}" />
+<script type="text/javascript" th:src="@{../../layui-1/layui.js}"></script>
+<!-- 滚动条插件 -->
+<script th:src="@{../../framework/jquery-ui-1.10.4.min.js}"></script>
+<script th:src="@{../../framework/jquery.mousewheel.min.js}"></script>
+<script th:src="@{../../framework/jquery.mCustomScrollbar.min.js}"></script>
+<script th:src="@{../../framework/cframe.js}"></script>
+<!-- 仅供所有子页面使用 -->
+<!-- 公共样式 结束 -->
+<script th:src="@{../../js/Itemone.js}"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>	
+</script>
+<script>
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form;
+})
+</script>
+</head>
+<body>
+   
+		
+	
+	<div class="layui-form" >
+	 <div class="layui-form-item">
+    <div class="layui-inline">
+      <div class="layui-input-inline">
+          <button type="button" class="layui-btn" onclick="addItemtwo()">增加</button>
+      </div>
+    </div>
+	 <div class="layui-inline">
+      <label class="layui-form-label">一级分类</label>
+      <div class="layui-input-inline">
+    
+        <select id="keyword" name="ioid" lay-verify="required" lay-search="" >
+          <option  th:each="e:${session.allItemone}"  th:value="${e.ioid}" th:text="${e.title}"></option>
+        </select>
+        
+      </div>
+      <button type="button" class="layui-btn" onclick="changeItemtwo()">查询</button>
+    </div>
+  </div>
+
+   
+    
+	<table id="test" lay-filter="test"></table>
+	<script type="text/javascript">
+	    var keyword=$("#keyword").val();
+		layui.use('table', function() {
+			var table = layui.table;
+			table.render({
+				elem : '#test',
+				url : '/Itemtwo/listAllItemtwo?keyword='+keyword,
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : false,
+				cols : [ [ {
+					type : 'checkbox'
+				}, {
+					field : 'itid',
+					title : '标题编号',
+				}, {
+					field : 'title',
+					title : '名称',
+				},
+				{
+					fixed : 'right',
+					title : '操作',
+					toolbar : '#barDemo'
+				}] ],
+				page : true,
+				response : {
+					statusCode : 200
+				//重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.status, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.data
+					//解析数据列表
+					};
+				}
+			});
+			table.on('tool(test)', function(obj) {
+				if (obj.event == "edit") {
+					var data = obj.data; //
+					  $.ajax({
+						type : "post",
+						url : "/Itemtwo/listItemtwoByItid",
+						data : {
+							itid : data.itid
+						},
+						dataType : "json",
+						success : function(data) {
+							if(data.msg=="操作成功"){
+								layer.open({//弹出层
+									  type: 2, 
+									  title: '一级标题信息',
+									  content: data.url ,
+									  area: ['400px', '300px']
+								}); 
+							}else{
+								layer.msg(data.msg);
+							}
+						}
+					})   
+				} //if结束 
+				if(obj.event == "del"){
+				var data = obj.data; //
+				layer.confirm('确定进行该操作么？', function(index){
+					$.ajax({
+						type : "post",
+						url : "/Itemtwo/deleteItemtwo",
+						data : {
+							itid : data.itid
+						},
+						dataType : "json",
+						success : function(data) {
+							
+							 if(data.msg=="对不起,您没有权限"){
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index);
+							 }else{
+								 layer.msg(data.msg, {
+								        time: 1000
+								      });
+									 layer.close(index); 
+									 setTimeout(function(){window.location.href=data.url;},1000);
+							 }
+							 
+						   
+					   }
+					}) //ajax结束
+			     });
+				}//删除结束
+			})
+		});
+	</script>
+</body>
+
+
+</html>

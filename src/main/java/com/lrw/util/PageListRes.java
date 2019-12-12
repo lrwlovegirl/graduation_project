@@ -8,10 +8,11 @@ import java.util.List;
 //分页的工具类，用于返回总条数和查询的数据
 public class PageListRes implements Serializable{
     private String status="200";
-    private String code="200";
+    private String code="0";
     private String message="";
     private Long total; 
     private Long number;
+    private Long count;
     private List<?> data=new ArrayList();
 	public String getStatus() {
 		return status;
@@ -48,6 +49,12 @@ public class PageListRes implements Serializable{
 	}
 	public void setNumber(Long number) {
 		this.number = number;
+	}
+	public Long getCount() {
+		return count;
+	}
+	public void setCount(Long count) {
+		this.count = count;
 	}
    
     

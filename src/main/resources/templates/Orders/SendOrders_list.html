@@ -1,0 +1,221 @@
+<!DOCTYPE HTML >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<title>ADi达斯网上商城</title>
+
+<!-- 公共样式 开始 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" th:src="@{../js/JQuery-3.4.js}"></script>
+<link rel="stylesheet" type="text/css"
+	th:href="@{../layui-1/css/layui.css}" />
+<script type="text/javascript" th:src="@{../layui-1/layui.js}"></script>
+<!-- 滚动条插件 -->
+<script th:src="@{/framework/jquery-ui-1.10.4.min.js}"></script>
+<script th:src="@{/framework/jquery.mousewheel.min.js}"></script>
+<script th:src="@{/framework/jquery.mCustomScrollbar.min.js}"></script>
+<script th:src="@{/framework/cframe.js}"></script>
+<script th:src="@{/js/Orders.js}"></script>
+<!-- 仅供所有子页面使用 -->
+<!-- 公共样式 结束 -->
+<script th:src="@{../js/ItemOneJS.js}"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn  layui-btn-xs" lay-event="send">发货</a>	
+  <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="find">查看详情</a>	
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="no">拒绝该订单</a>	
+</script>
+<script type="text/javascript">
+layui.use('layer', function(){
+ var layer = layui.layer;
+});              
+</script>
+</head>
+<body>
+
+	<div class="layui-input-inline">
+		<input type="text" name="keyword" id="keyword" placeholder="请输入关键字"
+			class="layui-input-block">
+		<button type="button" class="layui-btn" onclick="find()">查询</button>
+	</div>
+
+	<div class="layui-input-inline">
+		<button class="layui-btn" id="getCheckData">批量发货</button>
+	</div>
+	<input type="hidden" id="oid" >
+	<table id="test" lay-filter="test"></table>
+	<script type="text/javascript">
+	 layui.use('table', function() {
+			var table = layui.table;
+			var keyword = $("#keyword").val();
+			table.render({
+				elem : '#test',
+				url : "/orders/listAllSendOrders?keyword="+keyword,
+				toolbar : false,
+				title : '用户数据表',
+				totalRow : false,
+				cols : [ [ 
+				 {
+				   type:'checkbox'
+				 }
+				,{
+					field : 'oid',
+					title : '订单编号',
+				}, {
+					field : 'username',
+					title : '购买人姓名',
+				}
+				, {
+					field : 'cdate',
+					title : '下单时间',
+				}
+				, {
+					field : 'telephone',
+					title : '联系电话',
+				}
+				, {
+					field : 'address',
+					title : '收货地址',
+				}
+				,
+				{
+					fixed : 'right',
+					title : '操作',
+					toolbar : '#barDemo'
+				}
+				]],
+				page : true,
+				response : {
+					statusCode : 200
+				//重新规定成功的状态码为 200，table 组件默认为 0
+				},
+				parseData : function(res) { //将原始数据解析成 table 组件所规定的数据
+					return {
+						"code" : res.status, //解析接口状态
+						"msg" : res.message, //解析提示文本
+						"count" : res.total, //解析数据长度
+						"data" : res.data
+					//解析数据列表
+					};
+				}
+			});
+			
+			
+			table.on('tool(test)', function(obj) {
+				if(obj.event == "send"){//发货
+				var data = obj.data; //
+					$.ajax({
+						type : "post",
+						url : "/orders/changeOrdersStatusToRoad",
+						data : {
+							oid : data.oid
+						},
+						dataType : "json",
+						success : function(data) {
+							layer.msg(data.msg, {
+						        time: 1000
+						      });
+					    setTimeout(function(){window.location.href="/toRoadOrderList";},1000)
+					   }
+					}) //ajax结束
+				}//删除结束
+				if(obj.event == "find") {
+					var data = obj.data;
+					$.ajax({
+						type : "get",
+						url : "/orders/findOrdersDetailsByOid",
+						data : {
+							oid : data.oid
+						},
+						dataType : "json",
+						success : function(data) {
+							layer.open({//弹出层
+								  type: 2, 
+								  title: '订单详情',
+								  content: data.url ,
+								  area: ['80%', '80%']
+							}); 
+					   }
+					}) //ajax结束
+				}
+				
+				//拒绝订单
+				var index=0;
+				if(obj.event == "no") {
+					layer.confirm('确定进行该操作么？', function(index){
+						var data = obj.data;
+						$("#oid").val(data.oid);
+					    index=layer.open({//弹出层
+							  type: 1, 
+							  title: '拒绝原因',
+							  content: $('#noorders') ,
+							  area: ['400px', '300px']
+						}); 
+					})
+					
+				}
+			})//按钮监听
+			
+				
+				
+				
+				
+			$("#getCheckData").click(function(){
+				var checkStatus = table.checkStatus('test');
+	            var ids=[];
+	            for(var x=0;x<checkStatus.data.length;x++){
+	              ids.push(checkStatus.data[x].oid);
+	            }
+	            alert(ids[0])
+	            alert(ids[1]);
+				if(checkStatus.data.length==0||checkStatus.data.length==null){
+				    layer.msg('您还没有选择数据');
+				}else{
+					 layer.confirm('确定选择好数据了吗？', function(index){
+						$.ajax({
+							type : "post",
+							url : "/orders/changeOrdersStatusToRoadByOids",
+							traditional: true,
+							data : {
+									oids : ids
+									},
+							dataType : "json",
+							success : function(data) {
+								layer.msg(data.msg, {
+							        time: 1000
+							      });
+							   setTimeout(function(){window.location.href=data.url;},1000)
+							}
+					      }) //ajax结束
+					}) 
+				}//else结束
+				
+			});
+		});
+	 </script>
+	 
+	 <div class="layui-form layui-form-pane" style="display: none" id="noorders">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">选择拒绝原因</label>
+				<div class="layui-input-inline">
+					<select name="reason" id="reason">
+						<option value="库存不足">库存不足</option>
+						<option value="地区不可达">地区不可达</option>
+						<option value="其他">其他</option>
+					</select>
+				</div>
+			</div>
+          </div>
+          <div class="layui-form-item">
+			<div class="layui-input-inline">
+			    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				<button onclick="addNoOrders()" class="layui-btn layui-btn-warm">确认拒绝</button>
+			</div>
+		</div>
+	</div><!-- 隐藏的表单 -->
+</body>
+<script type="text/javascript">
+
+</script>
+
+</html>

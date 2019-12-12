@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymelea">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<link rel="stylesheet" type="text/css" th:href="@{css/info.css}" />
+<script type="text/javascript" th:src="@{js/JQuery-3.4.js}"></script>
+<script type="text/javascript" th:src="@{js/lofo.js}"></script>
+</head>
+<body>
+	<div id="all">
+		<div id="up">
+			<div id="uptext">
+				<a href="main.html"><img th:src="@{/img/adidas.png}" /></a>
+				<ul class="title">
+					<li><a
+						href="/Goods/FrontlistAllowGoodsByItemone?page=1&limit=8&keyword=男子">男子</a></li>
+					<li><a
+						href="/Goods/FrontlistAllowGoodsByItemone?page=1&limit=8&keyword=女子">女子</a></li>
+					<li><a
+						href="/Goods/FrontlistAllowGoodsByItemone?page=1&limit=8&keyword=儿童">儿童
+							&nbsp;|</a></li>
+					<li><a
+						href="/Goods/FrontlistAllowGoodsByItemone?page=1&limit=8&keyword=运动">运动</a></li>
+				</ul>
+				<p id="search">
+					<img th:src="@{/img/search.png}" /><input type="text"
+						id="searchinput" placeholder="抢YEEZY" />
+				</p>
+			</div>
+		</div>
+		<div id="center">
+			<h2>我的订单</h2>
+			<div id="centitle">
+				<ul id="cenul">
+					<li class="choose"><a href="#">全部订单</a></li>
+					<li><a href="#">代发货</a></li>
+					<li><a href="#">待收货</a></li>
+					<li><a href="#">已收货</a></li>
+				</ul>
+			</div>
+
+			<div th:if="${noOrders}!=null">
+				<h1>
+					您没有任何的订单信息，赶快去<a href="/index" style="color: red">购物</a>吧
+				</h1>
+			</div>
+			<div id="cenarea">
+				<div class="orderitems" th:each="orders:${orderlist}">
+					<p>
+						下单时间：<span th:text="${orders.cdate}"></span>
+					</p>
+					<p>
+						订单编号：<span th:text="${orders.oid}"></span>
+					</p>
+					<p>
+						订单金额：￥<span th:text="${orders.allpay}"></span>
+					</p>
+					<p>
+						订单状态：<span th:if="${orders.status==0}">未发货</span> <span
+							th:if="${orders.status==1}">已发货   <a th:href="|/orders/infochangeOrdersStatusToEnd?oid=${orders.oid}|" style="color:red">确认收货</a></span> <span
+							th:if="${orders.status==2}">已完成</span> <span
+							th:if="${orders.status==3}">被拒绝 <span th:text="${orders.reason}"></span></span>
+					</p>
+					<table id="orderitem">
+						<tr th:each="details:${orders.detlist}">
+						    <td><img th:src="${details.goods.photo}"/></td>
+							<td><span th:text="${details.title }"></span></td>
+							<td>￥<span th:text="${details.price }"></span></td>
+							<td>购买数量:<span th:text="${details.count }"></span></td>
+						</tr>
+					</table>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div id="buttom">
+			<div id="btop">
+				<a href="#"><img th:src="@{/img/but.png}" /></a>
+			</div>
+			<div id="bbut">
+				<table border="0px" cellspacing="0" cellpadding="0" id="tab">
+					<tr>
+						<th>产品</th>
+						<th>运动</th>
+						<th>帮助中心</th>
+						<th>网站政策</th>
+					</tr>
+					<tr>
+						<td><a href="#">鞋类</a></td>
+						<td><a href="#">跑步</a></td>
+						<td><a href="#">关于员工</a></td>
+						<td><a href="#">使用条款</a></td>
+					</tr>
+					<tr>
+						<td><a href="#">配件</a></td>
+						<td><a href="#">训练</a></td>
+						<td><a href="#">尺码表</a></td>
+						<td><a href="#">隐私声明</a></td>
+					</tr>
+					<tr>
+						<td><a href="#">最新上市</a></td>
+						<td><a href="#">足球</a></td>
+						<td><a href="#">adiCLUB会员</a></td>
+						<td><a href="#">物流配送规则</a></td>
+					</tr>
+					<tr>
+						<td><a href="#">新品发售日历</a></td>
+						<td><a href="#">篮球</a></td>
+						<td><a href="#">门店查询</a></td>
+						<td><a href="#">退换货规则</a></td>
+					</tr>
+					<tr>
+						<td><a href="#">限量发售</a></td>
+						<td><a href="#">户外</a></td>
+						<td><a href="#">关于我们</a></td>
+						<td><a href="#">下单指南</a></td>
+					</tr>
+				</table>
+				<div id="butt">
+					<a href="#"><img th:src="@{/img/bbb.png}" /></a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>
+
