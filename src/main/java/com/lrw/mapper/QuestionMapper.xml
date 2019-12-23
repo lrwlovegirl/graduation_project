@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.QuestionMapper">
+	<insert id="createQuestion" parameterType="com.lrw.vo.Question">
+	   insert into question (title,content,answer,type,about,publisher,masteryLevel,difficultyLevel,optionA,optionB,optionC,optionD,analysis) 
+	   values
+	   (#{title},#{content},#{answer},#{type},#{about},#{publisher},#{masteryLevel},#{difficultyLevel},#{optionA},#{optionB},#{optionC},#{optionD},#{analysis})
+	</insert>
+	
+	<select id="queryQuestionByKeyword" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
+	  select * from Question
+	  <if test="keyword!=null and keyword!='' ">
+         where title like '%${keyword}%' or content  like '%${keyword}%' or publisher or about like '%${keyword}%'
+        </if>
+	</select>
+	
+	<select id="queryQuestionByType" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
+	   select * from Question where type=#{type}
+	</select>
+	
+	<select id="findQuestionByQid" parameterType="int" resultType="com.lrw.vo.Question">
+	   select * from Question where qid=#{qid}
+	</select>
+	
+	<update id="updateQuestion" parameterType="com.lrw.vo.Question">
+	   update question set title=#{title},content=#{content},answer=#{answer},type=#{type},about=#{about},publisher=#{publisher},difficultyLevel=#{difficultyLevel}
+	   ,analysis=#{analysis},optionA=#{optionA},optionB=#{optionB},optionC=#{optionC},optionD=#{optionD}
+	   where qid=#{qid}
+	</update>
+	
+	
+
+</mapper>  

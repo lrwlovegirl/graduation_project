@@ -49,11 +49,17 @@
 	<select id="queryUserByKeyword" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User">
 	    select * from User 
 	    <if test="keyword!=null and keyword!='' ">
-         and  username like '%${keyword}%' or email  like '%${keyword}%' or sex like  '%${keyword}%' 
-         or birhday like '%${keyword}%'
-   </if>
+         where username like '%${keyword}%' or email  like '%${keyword}%' or sex =#{keyword} 
+         or birthday like '%${keyword}%'
+        </if>
 	</select>
 	
+	<select id="findUserByUsernameAndPassword"  resultType="com.lrw.vo.User">
+	     select * from user where username=#{username} and password=#{password} 
+	</select>
 	
+	<select id="findUserByUsername" parameterType="string" resultType="com.lrw.vo.User">
+	  select * from user where username=#{username}
+	</select>
 
 </mapper>  

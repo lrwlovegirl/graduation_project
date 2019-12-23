@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.MenuMapper">
+	<select id="findMenuByUsername"  parameterType="string" resultType="com.lrw.vo.Menu">
+	  select * FROM menu WHERE mid in (SELECT DISTINCT mid FROM role_menu WHERE rid in 
+	  (select rid from user_role where uid = (select id FROM user where username=#{admin}) ))
+	</select>
+	
+	
+
+</mapper>  

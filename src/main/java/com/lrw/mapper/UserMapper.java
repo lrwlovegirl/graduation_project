@@ -29,6 +29,10 @@ public interface UserMapper {
   void changeStatusToOk(int[] array);
   //模糊查询
   List<User> queryUserByKeyword(QueryVo qv);
+  //用户名和密码查询拥护
+  User findUserByUsernameAndPassword(String username, String password);
+  //用户名查询用户
+  User findUserByUsername(String username);
   
   
 }

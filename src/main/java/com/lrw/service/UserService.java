@@ -27,4 +27,9 @@ public interface UserService {
 	  void changeStatusToNotOk(int[] array);
 	  //模糊查询
 	  PageListRes queryUserByKeyword(QueryVo qv);
+	  //登录调用的方法
+	  User findUserByUsernameAndPassword(String username,String password);
+	  //根据用户名查询用户
+	  User findUserByUsername(String username);
+	  
 }

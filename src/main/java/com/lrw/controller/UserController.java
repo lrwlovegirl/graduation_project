@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrw.service.UserService;
+import com.lrw.util.Md5Utils;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
@@ -27,7 +28,7 @@ public class UserController {
     
 	@PostMapping("/addUser")
 	public ReturnRes addUser(User user) {
-		String password = new SimpleHash("MD5",user.getPassword(),null,2).toString();
+		String password = Md5Utils.MD5Encode(user.getPassword());
 		user.setPassword(password);
 		ReturnRes res = new ReturnRes();
 		try {
@@ -120,7 +121,7 @@ public class UserController {
 					userServiceImpl.changeStatusToOk(array);
 					res.setMsg("操作成功");
 					res.setSuccess(true);
-				}else if(status==0){
+				}else if(status==0){//处于解封状态
 					userServiceImpl.changeStatusToNotOk(array);
 					res.setSuccess(true);
 					res.setMsg("操作成功");
@@ -131,9 +132,8 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/queryUserByKeyword")
+	@PostMapping("/queryUserByKeyword")
 	public PageListRes queryUserByKeyword(QueryVo qv) {
-		System.out.println(qv.getKeyword());
 		PageListRes queryUser =null;
 		try {
 			queryUser= userServiceImpl.queryUserByKeyword(qv);

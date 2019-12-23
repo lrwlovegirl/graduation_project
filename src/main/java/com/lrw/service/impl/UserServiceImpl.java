@@ -91,6 +91,7 @@ public class UserServiceImpl implements com.lrw.service.UserService {
 
 	@Override
 	public PageListRes queryUserByKeyword(QueryVo qv) {
+		
 		PageListRes res = new PageListRes();
 		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<User> list = this.userMapper.queryUserByKeyword(qv);
@@ -100,6 +101,18 @@ public class UserServiceImpl implements com.lrw.service.UserService {
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());
 		return res;
+	}
+
+	@Override
+	public User findUserByUsernameAndPassword(String username, String password) {
+		// TODO Auto-generated method stub
+		return userMapper.findUserByUsernameAndPassword(username, password);
+	}
+
+	@Override
+	public User findUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return userMapper.findUserByUsername(username);
 	}
 
 }

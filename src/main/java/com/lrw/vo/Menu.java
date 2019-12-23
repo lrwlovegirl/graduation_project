@@ -9,7 +9,7 @@ public class Menu {
 	private String title;
 	private String icon;
 	private String href;
-	private boolean spread;
+	private boolean spread=false;
 	private List<Menu> children;
 	
 

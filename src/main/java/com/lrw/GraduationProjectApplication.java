@@ -1,17 +1,8 @@
 package com.lrw;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.lrw.address.SnCal;
-import com.lrw.util.HttpClientUtil;
 
 @SpringBootApplication
 @MapperScan("com.lrw.mapper")
@@ -33,5 +24,4 @@ public class GraduationProjectApplication {
 //		content = URLEncoder.encode(content, "UTF-8"); 
 //		System.err.println(content);
 	}
-
 }
