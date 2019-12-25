@@ -6,6 +6,13 @@
 	  (select rid from user_role where uid = (select id FROM user where username=#{admin}) ))
 	</select>
 	
-	
+	<select id="getMenuByRid" parameterType="int" resultType="com.lrw.vo.Menu">
+	  select * FROM menu WHERE mid in (select mid FROM role_menu WHERE rid=#{rid})
+	</select>
+
+    <select id="findAllMenu" resultType="com.lrw.vo.Menu">
+     select * from Menu
+    </select>
+
 
 </mapper>  

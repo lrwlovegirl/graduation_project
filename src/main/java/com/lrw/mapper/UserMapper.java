@@ -34,5 +34,7 @@ public interface UserMapper {
   //用户名查询用户
   User findUserByUsername(String username);
   
+  void updateUserLastLoginTime(String username,String time);
+  
   
 }

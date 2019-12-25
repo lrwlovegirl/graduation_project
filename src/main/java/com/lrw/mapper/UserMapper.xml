@@ -62,4 +62,8 @@
 	  select * from user where username=#{username}
 	</select>
 
+    <update id="updateUserLastLoginTime">
+       update user set lastlogintime=#{time} where username=#{username}
+    </update>
+
 </mapper>  

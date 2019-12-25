@@ -12,7 +12,9 @@ public interface MenuMapper {
 
 List<Menu> findMenuByUsername(String username);
 
-	
+List<Menu> getMenuByRid(int rid);
+
+List<Menu> findAllMenu();	
 	
 	
 }

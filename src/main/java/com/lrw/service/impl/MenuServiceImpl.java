@@ -32,4 +32,14 @@ public class MenuServiceImpl implements MenuService{
 			return result;
 		}
 	}
+	@Override
+	public List<Menu> getMenuByRid(int rid) {
+		// TODO Auto-generated method stub
+		return menuMapper.getMenuByRid(rid);
+	}
+	@Override
+	public List<Menu> findAllMenu() {
+		// TODO Auto-generated method stub
+		return menuMapper.findAllMenu();
+	}
 }

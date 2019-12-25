@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.RoleMapper">
+	<select id="findAllRole"   resultType="com.lrw.vo.Role">
+	   select * from role
+	</select>
+	<select id="queryRoleById" parameterType="int" resultType="com.lrw.vo.Role">
+	  SELECT rid FROM user_role WHERE uid=#{id}
+	</select>
+	
+	<select id="findAllRolePlus" resultType="com.lrw.vo.Role" >
+	 select * from role
+	</select>
+	
+	<delete id="deleteUserRolesById" parameterType="int">
+	     delete from user_role where uid=#{id}
+	</delete>
+	
+	<insert id="addUserRoles">
+	  insert into user_role (uid,rid) values(#{id},#{rid})
+	</insert>
+	
+	<delete id="deleteMenuByRid" parameterType="int">
+	   delete from role_menu where rid=#{rid}
+	</delete>
+	
+	<insert id="addMenuToRole">
+	   insert into role_menu (rid,mid) values (#{rid},#{mid})
+	</insert>
+	
+</mapper>  

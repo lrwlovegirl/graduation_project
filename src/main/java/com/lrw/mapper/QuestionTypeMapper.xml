@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.QuestionTypeMapper">
+	
+	<select id="findAllQuestionTypeByUsername" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.QuestionType">
+	   select * from questiontype where createuser=#{publisher}
+	</select>
+	
+	<insert id="addQuestionType" parameterType="com.lrw.vo.QuestionType">
+	   insert into questiontype (name,status,createuser,createtime) values (#{name},#{status},#{createuser},#{createtime});
+	</insert>
+
+    <select id="findQuestionTypeByTid" parameterType="int" resultType="com.lrw.vo.QuestionType">
+         select * from questiontype where tid =#{tid}
+    </select>
+
+   <update id="changeQTStatusToAble" parameterType="int">
+      update questiontype set status = 0 where tid = #{tid}
+   </update>
+   
+    <update id="changeQTStatusToUnable" parameterType="int">
+      update questiontype set status = 1 where tid = #{tid}
+   </update>
+
+    <update id="changeQuestionTypeName" >
+        update questiontype set name=#{name} where tid=#{tid}
+    </update>
+
+    <select id="queryAllEnableQT" resultType="com.lrw.vo.QuestionType">
+      select * from questiontype where status = 0
+    </select>
+
+
+</mapper>  

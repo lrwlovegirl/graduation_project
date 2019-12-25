@@ -8,14 +8,14 @@
 	</insert>
 	
 	<select id="queryQuestionByKeyword" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
-	  select * from Question
+	  select * from Question where publisher=#{publisher} 
 	  <if test="keyword!=null and keyword!='' ">
-         where title like '%${keyword}%' or content  like '%${keyword}%' or publisher or about like '%${keyword}%'
+         and title like '%${keyword}%' or content  like '%${keyword}%' or publisher or about like '%${keyword}%'
         </if>
 	</select>
 	
 	<select id="queryQuestionByType" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
-	   select * from Question where type=#{type}
+	   select * from Question where type=#{type} and publisher=#{publisher} 
 	</select>
 	
 	<select id="findQuestionByQid" parameterType="int" resultType="com.lrw.vo.Question">

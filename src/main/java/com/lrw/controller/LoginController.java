@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lrw.service.UserService;
 import com.lrw.util.CookieUtils;
+import com.lrw.util.GetTime;
 import com.lrw.util.Md5Utils;
 import com.lrw.util.ReturnRes;
 import com.lrw.vo.User;
@@ -31,6 +32,8 @@ public class LoginController {
     		User user = userServiceImpl.findUserByUsernameAndPassword(username, password);
     		if(user!=null) {
     			if("1".equals(user.getStatus())) {
+    				String nowtime = GetTime.getFormatTime();//获取当前时间
+    				userServiceImpl.updateUserLastLoginTime(username, nowtime);
     				res.setMsg("登录成功");
         			res.setSuccess(true);
         			res.setUrl("../../index.html");

@@ -25,24 +25,7 @@ public class RequestInterceptor implements HandlerInterceptor {
 	private double starttime;
 	
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//		starttime=System.currentTimeMillis();
-//		String reqURL = request.getRequestURL().toString();//获取要请求的路径
-//		String ip = request.getRemoteHost ();//获取请求者ip
-//		//请求的参数
-//		Map<String, String[]> parameterMap = request.getParameterMap();
-//		parameterMap.forEach((k,v)->{
-//			
-//		});
-//		
-//		HandlerMethod handlerMethod = (HandlerMethod) handler;
-//		Method method = handlerMethod.getMethod();
-//		//获取请求的方法
-//		System.out.println(handlerMethod.getBean().getClass()+method.getName());
-//		//获取方法需要的参数
-//		MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
-				
-		//System.out.println(reqURL);
-		//System.out.println(ip);
+       //获取登录日志
 		
 		return true;
 	}

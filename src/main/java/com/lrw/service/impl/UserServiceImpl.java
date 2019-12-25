@@ -115,4 +115,9 @@ public class UserServiceImpl implements com.lrw.service.UserService {
 		return userMapper.findUserByUsername(username);
 	}
 
+	@Override
+	public void updateUserLastLoginTime(String username,String time) {
+		userMapper.updateUserLastLoginTime(username,time);
+	}
+
 }

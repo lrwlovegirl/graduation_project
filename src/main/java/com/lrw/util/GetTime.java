@@ -16,7 +16,7 @@ public class GetTime
 {
     //获取当前的时间
     public static String getFormatTime() {
-    	String time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    	String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     	return time ;
     }
 
