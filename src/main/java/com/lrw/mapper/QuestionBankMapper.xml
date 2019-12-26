@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.QuestionBankMapper">
+	
+	<select id="findAllQuestionBankByUsername" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.QuestionBank">
+	   select * from QuestionBank where createuser=#{publisher} and status=0
+	</select>
+	
+	<insert id="addQuestionBank" parameterType="com.lrw.vo.QuestionBank">
+	   insert into QuestionBank (qbname,status,createuser,createtime,remarks) values (#{qbname},#{status},#{createuser},#{createtime},#{remarks});
+	</insert>
+
+   <update id="changeQuestionBankName" >
+     update QuestionBank set qbname =#{qbname} where qbid=#{qbid}
+   </update>
+
+   <select id="queryAllEnableQB" resultType="com.lrw.vo.QuestionBank">
+        select * from QuestionBank where createuser=#{username} and status = 0;
+    </select>
+   
+    <select id="queryAllQb" resultType="com.lrw.vo.QuestionBank">
+       select * from questionbank
+     </select>
+
+    <update id="changeQuestionBankToNoSeeByQbid" parameterType="int">
+        update questionbank set status=1 where qbid=#{qbid}
+    </update>
+     
+   <update id="changeQuestionBankRemarks">
+      update questionbank set remarks =#{remarks} where qbid=#{qbid}
+   </update>
+
+</mapper>  

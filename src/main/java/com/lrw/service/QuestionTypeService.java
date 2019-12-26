@@ -20,7 +20,9 @@ public interface QuestionTypeService {
 
 	public void changeQuestionTypeName(Integer tid, String name);
 
-	public List<QuestionType> queryAllEnableQT();
+	public List<QuestionType> queryAllEnableQT(String username);
+
+	public String findQuestionTypeNameByType(int type);
 	
 	
 }

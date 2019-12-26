@@ -95,8 +95,8 @@ public class QuestionTypeController {
     
     @ApiOperation("查询出所有可用的题型")
     @GetMapping("/queryAllEnableQT")
-    public List<QuestionType> queryAllEnableQT(){
-    	List<QuestionType> listAllEnableQT = questionTypeServiceImpl.queryAllEnableQT();
+    public List<QuestionType> queryAllEnableQT(@RequestParam("username")@Nullable String username){
+    	List<QuestionType> listAllEnableQT = questionTypeServiceImpl.queryAllEnableQT(username);
     	return listAllEnableQT;
     }
 

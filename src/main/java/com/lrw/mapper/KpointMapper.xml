@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lrw.mapper.KpointMapper">
+	
+	<select id="findAllKpointByUsername" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Kpoint">
+	   select * from Kpoint where createuser=#{publisher}
+	</select>
+	
+	<select id="findAllPoint" parameterType="string" resultType="com.lrw.vo.Kpoint">
+	   select * from Kpoint where createuser=#{publisher}
+	</select>
+	
+	<insert id="addKpoint" parameterType="com.lrw.vo.Kpoint">
+	   insert into Kpoint (kname,createuser,createtime) values (#{kname},#{createuser},#{createtime})
+	</insert>
+
+    <select id="findKpointBykid" parameterType="int" resultType="com.lrw.vo.Kpoint">
+         select * from Kpoint where kid =#{kid}
+    </select>
+
+    <update id="changeKpointName" >
+        update Kpoint set kname=#{kname} where kid=#{kid}
+    </update>
+    
+    <update id="changeKpointExplain">
+     update Kpoint set kpointexplain=#{kpointexplain} where kid=#{kid}
+    </update>
+</mapper>  

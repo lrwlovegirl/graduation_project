@@ -27,8 +27,12 @@
     </update>
 
     <select id="queryAllEnableQT" resultType="com.lrw.vo.QuestionType">
-      select * from questiontype where status = 0
+      select * from questiontype where status = 0 and createuser=#{createuser}
     </select>
+
+     <select id="findQuestionTypeNameByType" parameterType="int" resultType="string">
+        select name from questiontype where tid=#{type}
+     </select>
 
 
 </mapper>  

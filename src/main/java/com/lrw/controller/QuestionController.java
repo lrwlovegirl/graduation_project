@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrw.service.QuestionService;
+import com.lrw.service.QuestionTypeService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
@@ -19,6 +20,10 @@ import com.lrw.vo.Question;
 public class QuestionController {
     @Autowired
 	private QuestionService questionServiceimpl;
+    
+    @Autowired
+	private QuestionTypeService questionTypeServiceImpl;
+    
 	
   //模糊查询，默认查询全部
     @PostMapping("/queryQuestionByKeyword")
@@ -37,6 +42,9 @@ public class QuestionController {
   	public ReturnRes createQuestion(Question question) {
     	ReturnRes res = new ReturnRes();
     	try {
+    		int type = question.getType();
+    		String typename = questionTypeServiceImpl.findQuestionTypeNameByType(type);
+    		question.setQuestiontype(typename);
     		//System.out.println(question);
     	    questionServiceimpl.createQuestion(question);
     		res.setSuccess(true);
@@ -105,6 +113,7 @@ public class QuestionController {
     }
     
 	
+    
 	
 	
 	

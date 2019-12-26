@@ -16,7 +16,8 @@ public class Question implements Serializable{
 	private String content;//问题具体描述，要求
 	private String about;//问题是关于什么的，相当于标签
 	private String answer;//问题答案
-    private int type;//问题的类型 0:选择题  1:填空题  2:设计题 
+    private int type;//问题的类型 0:选择题  1:填空题  2:设计题
+    private String questiontype;
     private int  correctCount; //本题回答正确的人数
     private int  uncorrentCount;//回答错误的人数
     private String birthday = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());//生成日期

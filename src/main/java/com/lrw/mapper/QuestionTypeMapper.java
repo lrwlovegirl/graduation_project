@@ -22,6 +22,8 @@ public interface QuestionTypeMapper {
 
 	void changeQuestionTypeName(Integer tid, String name);
 
-	List<QuestionType> queryAllEnableQT();
+	List<QuestionType> queryAllEnableQT(String createuser);
+
+	String findQuestionTypeNameByType(int type);
 
 }
