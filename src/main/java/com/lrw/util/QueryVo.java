@@ -13,6 +13,7 @@ public class QueryVo  implements Serializable{
     private int page;
     private int limit;
     private String keyword;
-    private int type;
+    private Integer type;
     private String publisher;
+    private Integer qbid;
 }

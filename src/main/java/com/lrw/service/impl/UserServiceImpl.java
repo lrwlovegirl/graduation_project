@@ -29,7 +29,7 @@ public class UserServiceImpl implements com.lrw.service.UserService {
 		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<User> list = this.userMapper.findAllUser(qv);
 		PageInfo<User> page = new PageInfo<User>(list);
-		res.setData(list);
+		res.setData(page.getList());
 		res.setTotal(page.getTotal());
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());

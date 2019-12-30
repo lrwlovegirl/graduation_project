@@ -26,7 +26,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<QuestionBank> list = this.questionBankMapper.findAllQuestionBankByUsername(qv);
 		PageInfo<QuestionBank> page = new PageInfo<QuestionBank>(list);
-		res.setData(list);
+		res.setData(page.getList());
 		res.setTotal(page.getTotal());
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());
@@ -61,6 +61,12 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	public void changeQuestionBankRemarks(Integer qbid, String remarks) {
 		// TODO Auto-generated method stub
 		questionBankMapper.changeQuestionBankRemarks(qbid,remarks);
+	}
+
+	@Override
+	public List<QuestionBank> selectAllEnableQBByUserName(String username) {
+		// TODO Auto-generated method stub
+		return questionBankMapper.selectAllEnableQBByUserName(username);
 	}
 
 }

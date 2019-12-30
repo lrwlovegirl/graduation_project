@@ -15,7 +15,14 @@
 	</select>
 	
 	<select id="queryQuestionByType" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
-	   select * from Question where type=#{type} and publisher=#{publisher} 
+	   select * from Question where  publisher=#{publisher}  
+	   <if test="type!=null">
+	    and type=#{type} 
+	   </if>
+	   <if test="qbid!=null">
+	     and qbid=#{qbid}
+	   </if>
+	  
 	</select>
 	
 	<select id="findQuestionByQid" parameterType="int" resultType="com.lrw.vo.Question">
@@ -28,6 +35,11 @@
 	   where qid=#{qid}
 	</update>
 	
-	
+	<select id="selectQuestionByQids" parameterType="list" resultType="com.lrw.vo.Question">
+	  select * from Question where qid in 
+	   <foreach item="item" index="index" collection="qids" open="(" separator="," close=")">  
+　　　　#{index}  
+　　     </foreach>
+	</select>
 
 </mapper>  

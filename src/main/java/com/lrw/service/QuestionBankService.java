@@ -20,4 +20,6 @@ public interface QuestionBankService {
 
 	void changeQuestionBankRemarks(Integer qbid, String remarks);
 
+	List<QuestionBank> selectAllEnableQBByUserName(String username);
+
 }

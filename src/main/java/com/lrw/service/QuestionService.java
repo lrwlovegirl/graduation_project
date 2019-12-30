@@ -1,5 +1,9 @@
 package com.lrw.service;
 
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.vo.Question;
@@ -18,6 +22,8 @@ public interface QuestionService {
 	PageListRes queryQuestionByType(QueryVo qv);
 	//查出选择题的数量
 	int findSelectQuestion();
+	
+	List<Question> selectQuestionByQids(@NotNull Integer[] qids);
 	
 	
   

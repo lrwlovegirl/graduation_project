@@ -1,17 +1,26 @@
 package com.lrw.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.lrw.service.QuestionService;
 import com.lrw.service.QuestionTypeService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
+import com.lrw.util.WriteDoc;
 import com.lrw.vo.Question;
 
 @RestController
@@ -111,12 +120,4 @@ public class QuestionController {
     	
     	return null;
     }
-    
-	
-    
-	
-	
-	
-	
-	
 }

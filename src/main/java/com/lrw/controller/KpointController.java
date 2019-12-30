@@ -106,7 +106,6 @@ public class KpointController {
     @PostMapping("/findAllKpointByQid")
     public List<Kpoint> findAllKpoint(@RequestParam("qid")@Nullable Integer qid,@RequestParam("username")@Nullable String username ){
     	String kname = questionServiceimpl.findQuestionByQid(qid).getAbout();
-    	System.out.println("kname: "+kname);
     	List<Kpoint> kpointList = kpointServiceImpl.findAllPoint(username);//查询出所有的知识点
     	for(int x = 0;x<kpointList.size();x++) {
     		if(kpointList.get(x).getKname().equals(kname)) {

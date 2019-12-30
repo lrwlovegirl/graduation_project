@@ -31,7 +31,27 @@ public class Question implements Serializable{
 	private String optionC;//选项C
 	private String optionD;//选项D
 	private String analysis="~本题目没有解析呦~";//题目解析
+	private Integer qbid;//所属题库编号
 	
-	
-	
+	public String writeToDoc() {
+		StringBuffer str = new StringBuffer(this.title+"\r\n"); 
+		if(null!=content&&!("".equals(content.trim()))) {
+			str.append("具体描述："+this.content+"\r\n");
+		}
+		if(null!=optionA) {
+			str.append("	A:"+this.optionA+"\r\n");
+		};
+		if(null!=optionB) {
+			str.append("	B:"+this.optionB+"\r\n");
+		};
+		if(null!=optionC) {
+			str.append("	C:"+this.optionC+"\r\n");
+		};
+		if(null!=optionD) {
+			str.append("	D:"+this.optionD+"\r\n");
+		};
+		str.append("答案："+this.answer);
+		str.append("\r\n");
+		return str.toString();
+	}
 }

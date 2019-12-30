@@ -3,9 +3,12 @@ package com.lrw.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lrw.mapper.QuestionMapper;
@@ -24,10 +27,11 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public PageListRes queryQuestionByKeyword(QueryVo qv) {
 		PageListRes res = new PageListRes();
-		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
+	    PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<Question> list = this.questionMapper.queryQuestionByKeyword(qv);
 		PageInfo<Question> page = new PageInfo<Question>(list);
-		res.setData(list);
+		res.setData(page.getList());
+		//设置总条数
 		res.setTotal(page.getTotal());
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());
@@ -56,7 +60,7 @@ public class QuestionServiceImpl implements QuestionService {
 		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<Question> list = this.questionMapper.queryQuestionByType(qv);
 		PageInfo<Question> page = new PageInfo<Question>(list);
-		res.setData(list);
+		res.setData(page.getList());
 		res.setTotal(page.getTotal());
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());
@@ -67,6 +71,12 @@ public class QuestionServiceImpl implements QuestionService {
 	public int findSelectQuestion() {
 		List<Question> selectQuestionList = new ArrayList();
 		return 0;
+	}
+
+	@Override
+	public List<Question> selectQuestionByQids(@NotNull Integer[] qids) {
+		// TODO Auto-generated method stub
+		return questionMapper.selectQuestionByQids(qids);
 	}
 	
 

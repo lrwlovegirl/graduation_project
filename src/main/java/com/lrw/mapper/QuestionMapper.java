@@ -2,6 +2,8 @@ package com.lrw.mapper;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.lrw.util.PageListRes;
@@ -22,6 +24,8 @@ public interface QuestionMapper {
 	void updateQuestion(Question question);
 	
 	List<Question> queryQuestionByType(QueryVo qv);
+
+	List<Question> selectQuestionByQids (@NotNull Integer[] qids);
 
 
 

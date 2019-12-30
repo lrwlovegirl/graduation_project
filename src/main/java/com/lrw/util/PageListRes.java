@@ -14,6 +14,14 @@ public class PageListRes implements Serializable{
     private Long number;
     private Long count;
     private List<?> data=new ArrayList();
+    private Object obj;
+    
+	public Object getObj() {
+		return obj;
+	}
+	public void setObj(Object obj) {
+		this.obj = obj;
+	}
 	public String getStatus() {
 		return status;
 	}

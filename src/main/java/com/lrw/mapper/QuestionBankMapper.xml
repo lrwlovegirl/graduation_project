@@ -29,5 +29,9 @@
    <update id="changeQuestionBankRemarks">
       update questionbank set remarks =#{remarks} where qbid=#{qbid}
    </update>
+   
+   <select id="selectAllEnableQBByUserName" parameterType="string" resultType="com.lrw.vo.QuestionBank">
+        select * from questionbank where status = 0 and createuser=#{username}
+   </select>
 
 </mapper>  

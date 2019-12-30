@@ -25,7 +25,7 @@ public class KpointServiceImpl implements KpointService {
 		PageHelper.startPage(qv.getPage(),qv.getLimit());// （当前页，每页条数）
 		List<Kpoint> list = this.kpointMapper.findAllKpointByUsername(qv);
 		PageInfo<Kpoint> page = new PageInfo<Kpoint>(list);
-		res.setData(list);
+		res.setData(page.getList());
 		res.setTotal(page.getTotal());
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());

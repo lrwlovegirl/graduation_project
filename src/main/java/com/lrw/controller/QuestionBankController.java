@@ -1,5 +1,6 @@
 package com.lrw.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrw.service.QuestionBankService;
+import com.lrw.service.QuestionService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
+import com.lrw.vo.Question;
+import com.lrw.vo.QuestionBank;
 import com.lrw.vo.QuestionBank;
 
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +30,8 @@ public class QuestionBankController {
 
 	@Autowired
 	private QuestionBankService QuestionBankServiceImpl;
-	
+	@Autowired
+	private QuestionService questionServiceimpl;
 	
 	@ApiOperation("查询出每个人创建的题库")
 	@PostMapping("/quereAllQuestionBank")
@@ -74,10 +79,11 @@ public class QuestionBankController {
 		return res;
 	}
     
-    @ApiOperation("改变题库的名称")
+    @ApiOperation("改变题库的备注")
     @PostMapping("/changeQuestionBankRemarks")
-	public ReturnRes changeQuestionBankRemarks(@RequestParam("qbid")@Nullable Integer qbid,@RequestParam("remarks")@Nullable String remarks) {
-		ReturnRes res = new ReturnRes();
+	public ReturnRes changeQuestionBankRemarks(@RequestParam("qbid")@Nullable Integer qbid,@RequestParam("remarks") @Nullable String remarks) {
+		System.out.println(remarks);
+    	ReturnRes res = new ReturnRes();
 		try {
 			QuestionBankServiceImpl.changeQuestionBankRemarks(qbid,remarks);
 			res.setMsg("修改成功");
@@ -91,7 +97,24 @@ public class QuestionBankController {
 		return res;
 	}
     
-    
+    @ApiOperation("根据传过来的题号，查询出该题号的知识点，并将其标记，返回所有的知识点")
+    @PostMapping("/findAllQuestionBankByQid")
+    public List<QuestionBank> findAllQuestionBank(@RequestParam("qid")@Nullable Integer qid,@RequestParam("username")@Nullable String username ){
+    	//根据传过来的qid，问题编号，查询出所属的题库
+    	Question question = questionServiceimpl.findQuestionByQid(qid);
+    	List<QuestionBank> qbList =QuestionBankServiceImpl.selectAllEnableQBByUserName(username);
+        Integer qbid =question.getQbid();
+        if(null==qbid) {
+        	return qbList;
+        }else {
+        	for(int x=0;x<qbList.size();x++) {
+        		if(qbList.get(x).getQbid().equals(qbid)) {
+        			qbList.get(x).setMark(true);
+        		}
+        	}
+        }
+    	return qbList;
+    }
     
     
     @ApiOperation("用户： 查询出所有可用的题库")
@@ -117,5 +140,18 @@ public class QuestionBankController {
     	return res;
     }
     
+    @PostMapping("/selectAllEnableQBByUserName")
+    public List<QuestionBank> selectAllEnableQBByUserName(@RequestParam("username")@Nullable String username){
+    	
+    	List<QuestionBank> qbList =QuestionBankServiceImpl.selectAllEnableQBByUserName(username);
+    	if(null==qbList||qbList.size()==0) {
+    		qbList = new ArrayList<QuestionBank>();
+    		QuestionBank vo = new QuestionBank();
+    		vo.setQbname("暂无可用");
+    		qbList.add(vo);
+    		return qbList;
+    	}
+    	return qbList;
+    }
 	
 }
