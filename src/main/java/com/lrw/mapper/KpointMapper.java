@@ -22,4 +22,6 @@ public interface KpointMapper {
 
 	List<Kpoint> findAllPoint(String username);
 
+	Kpoint isRepeateKp(String kpoint, String username);
+
 }

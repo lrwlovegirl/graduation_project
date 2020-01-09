@@ -27,10 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.poi.ss.usermodel.Cell;
+
+import com.lrw.service.KpointService;
 import com.lrw.service.QuestionService;
+import com.lrw.service.QuestionTypeService;
 import com.lrw.util.ReturnRes;
 import com.lrw.util.WriteDoc;
+import com.lrw.vo.Kpoint;
 import com.lrw.vo.Question;
+import com.lrw.vo.QuestionType;
 
 import io.swagger.annotations.ApiOperation;
 @RestController
@@ -40,6 +45,11 @@ public class ExportController {
 
 	@Autowired
 	private QuestionService questionServiceimpl;
+	@Autowired
+	private QuestionTypeService questionServiceImpl;
+	@Autowired
+	private KpointService kpointServiceImpl;
+	
 	@ApiOperation("批量导出题目")
 	@PostMapping("/exportQuestion")
 	public ReturnRes exportQuestion(@RequestParam(value="qids[]") @NotNull Integer[] qids) {
@@ -80,13 +90,92 @@ public class ExportController {
             InputStream inputStream = file.getInputStream();
             Workbook wb = WorkbookFactory.create(inputStream);
             Sheet sheet = wb.getSheetAt(0);//获取第一个表单
-            int len = sheet.getLastRowNum();//获取这个sheet表单的行数
-            System.out.println(len);
-            for(int x=1;x<len;x++) {
-            	Row row = sheet.getRow(1);//获取一行
-            	System.out.println(row.getCell(0).getStringCellValue());
+            if(null == sheet) {
+            	res.setMsg("上传的文件错误，请检查");
+            	res.setSuccess(false);
+            	return res ;
             }
-			//List <Question> list =new ArrayList<Question>();
+            int len = sheet.getLastRowNum();//获取这个sheet表单用户操作过的最后一行行号
+            System.out.println("用户操作过的行数："+len);
+            List<Question> questionList = new ArrayList();
+            try {
+            	for(int x=1;x<=len;x++) {
+                	Row row = sheet.getRow(x);//获取一行
+                	if(row == null) {
+//                		res.setMsg("上传文件错误，请检查");
+//                		res.setSuccess(false);
+//                		return res;
+                		continue;
+                	}
+                	//获取题目
+                	String title = getCellValue(row.getCell(0)).toString();
+                	//获取题型
+                	String typename = getCellValue(row.getCell(1)).toString();
+                	//存在题型直接插入，不存在就先创建题型
+                	boolean repeateQt = questionServiceImpl.isRepeateQt(typename, username);
+                	if(repeateQt) {//不存在题目
+                		QuestionType  newQuestionType = new QuestionType();
+                		newQuestionType.setName(typename);
+                		newQuestionType.setCreateuser(username);
+                		newQuestionType.setStatus(0);
+                		questionServiceImpl.addQuestionType(newQuestionType);
+                	}
+                	//查询出该题型对应的编号--Question 的type
+                   Integer tid = questionServiceImpl.findQuestionTypeByNameAndCreateUser(typename,username);
+                   //具体要求; --Question 的content
+                   String content = getCellValue(row.getCell(2)).toString();
+                   //选项
+                   String optionA =getCellValue(row.getCell(3)).toString();
+                   String optionB =getCellValue(row.getCell(4)).toString();
+                   String optionC =getCellValue(row.getCell(5)).toString();
+                   String optionD =getCellValue(row.getCell(6)).toString();
+                   //答案
+                   String answer = getCellValue(row.getCell(7)).toString();
+                   //备注
+                   String analysis =getCellValue(row.getCell(8)).toString();
+                   //知识点
+//                   String kpoint = getCellValue(row.getCell(9)).toString();
+//                   if(null!=kpoint) {
+//                	   boolean repeateKp = kpointServiceImpl.isRepeateKp(kpoint,username);
+//                       if(repeateKp) {//是空
+//                    	Kpoint newKpoint = new Kpoint();
+//                    	newKpoint.setCreateuser(username);
+//                    	newKpoint.setKname(kpoint);
+//    					kpointServiceImpl.addKpoint(newKpoint);
+//                       }	
+//                       Kpoint kpointByName = kpointServiceImpl.findKpointByKnameAndCreateUser(kpoint,username);
+//                   }
+                   Question question = new Question();
+                   question.setTitle(title);
+                   question.setType(tid);
+                   question.setQuestiontype(typename);
+                   question.setAnswer(answer);
+                   question.setAnalysis(analysis);
+                   question.setContent(content);
+                   question.setOptionA(optionA);
+                   question.setOptionB(optionB);
+                   question.setOptionC(optionC);
+                   question.setOptionD(optionD);
+                   question.setPublisher(username);
+                   System.out.println(question);
+                   //保存到集合，一次性提交，出错也不至于有的提交了，有的没提交
+                   questionList.add(question);
+                   //questionServiceimpl.createQuestion(question);
+                }
+            	if(questionList.size()>0) {
+            		questionServiceimpl.createQuestionList(questionList);
+            	}
+            	res.setMsg("解析成功,已为您上传到数据库，可在题目列表查看");
+            }catch (NullPointerException e) {
+				res.setMsg("您上传的文件某一行存在数据为空的情况，请检查");
+				res.setSuccess(false);
+				return res;
+			}catch (Exception e) {
+				e.printStackTrace();
+				res.setMsg("系统异常，请稍后再试");
+				res.setSuccess(false);
+				return res;
+			}
 			return res;
 		}else {
 			res.setMsg("错误，上传不是excel文件，请检查");

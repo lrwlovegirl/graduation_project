@@ -35,11 +35,37 @@
 	   where qid=#{qid}
 	</update>
 	
-	<select id="selectQuestionByQids" parameterType="list" resultType="com.lrw.vo.Question">
+<!-- 	<select id="selectQuestionByQids" parameterType="list" resultType="com.lrw.vo.Question">
 	  select * from Question where qid in 
 	   <foreach item="item" index="index" collection="qids" open="(" separator="," close=")">  
 　　　　#{index}  
 　　     </foreach>
+	</select> -->
+	
+	
+	
+	<insert id="insertQuestionList" parameterType="list">
+	    insert into question (title,content,answer,type,publisher,optionA,optionB,optionC,optionD,analysis,questiontype)
+	    values
+	    <foreach item="item" index="index" collection="questionList" separator=",">
+	      (
+	       #{item.title},
+	       #{item.content},
+	       #{item.answer},
+	       #{item.type},
+	       #{item.publisher},
+	       #{item.optionA},
+	       #{item.optionB},
+	       #{item.optionC},
+	       #{item.optionD},
+	       #{item.analysis},
+	       #{item.questiontype}
+	      )
+	    </foreach>
+	</insert>
+	
+	<select id="findAllQuestionByType" parameterType="int" resultType="com.lrw.vo.Question">
+	      select * from question where type =#{type} 
 	</select>
 
 </mapper>  

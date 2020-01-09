@@ -25,4 +25,9 @@
     <update id="changeKpointExplain">
      update Kpoint set kpointexplain=#{kpointexplain} where kid=#{kid}
     </update>
+    
+    <select id="isRepeateKp" resultType="com.lrw.vo.Kpoint">
+        select * from Kpoint where kname=#{kpoint} and createuser=#{username}
+    </select>
+    
 </mapper>  

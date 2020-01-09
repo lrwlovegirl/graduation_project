@@ -78,6 +78,18 @@ public class QuestionServiceImpl implements QuestionService {
 		// TODO Auto-generated method stub
 		return questionMapper.selectQuestionByQids(qids);
 	}
+
+	@Override
+	public void createQuestionList(List<Question> questionList) {
+		// TODO Auto-generated method stub
+		questionMapper.insertQuestionList(questionList);
+	}
+
+	@Override
+	public List<Question> findAllQuestionByType(int type) {
+		
+		return questionMapper.findAllQuestionByType(type);
+	}
 	
 
 }

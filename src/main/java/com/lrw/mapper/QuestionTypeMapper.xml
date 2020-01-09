@@ -34,5 +34,12 @@
         select name from questiontype where tid=#{type}
      </select>
 
+      <select id="isRepeateQt"  parameterType="map"  resultType="com.lrw.vo.QuestionType">
+        select * from questionType where name =#{typename} and createuser=#{username}
+      </select>
+
+     <select id="findQuestionTypeByNameAndCreateUser"  parameterType="map" resultType="int">
+           select tid from questionType where name =#{typename} and createuser=#{username}
+     </select>
 
 </mapper>  

@@ -10,6 +10,10 @@ import com.lrw.interceptor.RequestInterceptor;
 public class InterceptorConfig extends WebMvcConfigurationSupport {
 	@Autowired
 	private RequestInterceptor requestInterceptor;
+//	@Autowired
+//	private MybatisInterceptor myBatisInterceptor;
+	
+	
 	@Override
 	protected void addInterceptors(InterceptorRegistry registry) {
 		// TODO Auto-generated method stub
@@ -19,7 +23,7 @@ public class InterceptorConfig extends WebMvcConfigurationSupport {
 		
 		registry.addInterceptor(requestInterceptor).addPathPatterns("/**");
        // .excludePathPatterns("/stuInfo/getAllStuInfoA","/account/register");    
-
+		//registry.addInterceptor(myBatisInterceptor).addPathPatterns("/**");
 		super.addInterceptors(registry);
 	}
 

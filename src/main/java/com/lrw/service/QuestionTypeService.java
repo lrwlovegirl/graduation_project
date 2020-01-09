@@ -24,5 +24,9 @@ public interface QuestionTypeService {
 
 	public String findQuestionTypeNameByType(int type);
 	
+	boolean isRepeateQt(String typename,String username);
+
+	public Integer findQuestionTypeByNameAndCreateUser(String questiontype, String username);
+	
 	
 }

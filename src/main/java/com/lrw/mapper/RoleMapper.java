@@ -2,6 +2,8 @@ package com.lrw.mapper;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.lrw.util.QueryVo;
@@ -22,4 +24,8 @@ public interface RoleMapper {
 	void deleteMenuByRid(Integer rid);
 
 	void addMenuToRole(Integer rid, Integer mid);
+
+	Role findRoleByName(@NotNull String rname);
+
+	void addRole(@NotNull String rname);
 }

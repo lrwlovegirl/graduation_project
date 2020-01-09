@@ -58,4 +58,16 @@ public class KpointServiceImpl implements KpointService {
 		return kpointMapper.findAllPoint(username);
 	}
 
+	@Override
+	public boolean isRepeateKp(String kpoint, String username) {
+		// TODO Auto-generated method stub
+		return null==kpointMapper.isRepeateKp(kpoint,username);
+	}
+
+	@Override
+	public Kpoint findKpointByKnameAndCreateUser(String kpoint, String username) {
+		// TODO Auto-generated method stub
+		return kpointMapper.isRepeateKp(kpoint, username);
+	}
+
 }

@@ -2,6 +2,8 @@ package com.lrw.service;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.vo.Role;
@@ -21,5 +23,9 @@ public interface RoleService {
 	void deleteMenuByRid(Integer rid);
 
 	void addMenuToRole(Integer rid, Integer integer);
+
+	boolean findRoleByName(@NotNull String rname);
+
+	void addRole(@NotNull String rname);
 
 }

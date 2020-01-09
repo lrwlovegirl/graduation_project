@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
@@ -26,6 +27,10 @@ public interface QuestionMapper {
 	List<Question> queryQuestionByType(QueryVo qv);
 
 	List<Question> selectQuestionByQids (@NotNull Integer[] qids);
+
+	void insertQuestionList(@Param("questionList")List questionList);
+
+	List<Question> findAllQuestionByType(int type);
 
 
 

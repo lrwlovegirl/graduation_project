@@ -20,4 +20,8 @@ public interface KpointService {
 
 	List<Kpoint> findAllPoint(String username);
 
+	boolean isRepeateKp(String kpoint, String username);
+	
+	Kpoint findKpointByKnameAndCreateUser(String kpoint, String username);
+
 }

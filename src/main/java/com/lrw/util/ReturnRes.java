@@ -9,4 +9,5 @@ public class ReturnRes implements Serializable {
   private String msg;
   private String url;
   private boolean isSuccess;
+  private Object data;
 }

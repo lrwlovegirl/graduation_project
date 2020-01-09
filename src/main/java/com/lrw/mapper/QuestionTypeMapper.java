@@ -1,6 +1,7 @@
 package com.lrw.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -25,5 +26,9 @@ public interface QuestionTypeMapper {
 	List<QuestionType> queryAllEnableQT(String createuser);
 
 	String findQuestionTypeNameByType(int type);
+
+	QuestionType isRepeateQt(Map map);
+
+	Integer findQuestionTypeByNameAndCreateUser(Map map);
 
 }

@@ -28,4 +28,13 @@
 	   insert into role_menu (rid,mid) values (#{rid},#{mid})
 	</insert>
 	
+	<select id="findRoleByName" parameterType="string" resultType="com.lrw.vo.Role">
+	 select * from role where name =#{rname}
+	</select>
+	
+	<insert id="addRole" parameterType="string">
+	  insert into role (name) values (#{name}) 
+	</insert>
+	
+	
 </mapper>  

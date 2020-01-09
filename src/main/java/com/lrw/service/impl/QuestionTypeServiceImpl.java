@@ -1,7 +1,9 @@
 package com.lrw.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,6 @@ import com.lrw.mapper.QuestionTypeMapper;
 import com.lrw.service.QuestionTypeService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
-import com.lrw.vo.Question;
 import com.lrw.vo.QuestionType;
 @Service
 public class QuestionTypeServiceImpl implements QuestionTypeService {
@@ -85,6 +86,24 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
 	public String findQuestionTypeNameByType(int type) {
 		// TODO Auto-generated method stub
 		return questionTypeMapper.findQuestionTypeNameByType(type);
+	}
+	
+	public boolean isRepeateQt(String typename,String username) {
+		Map map = new HashedMap<String,String>();
+		map.put("typename", typename);		
+		map.put("username", username);		
+		return null == questionTypeMapper.isRepeateQt(map);
+	}
+
+
+
+	@Override
+	public Integer findQuestionTypeByNameAndCreateUser(String typename, String username) {
+		// TODO Auto-generated method stub
+		Map map = new HashedMap<String,String>();
+		map.put("typename", typename);		
+		map.put("username", username);	
+		return questionTypeMapper.findQuestionTypeByNameAndCreateUser(map);
 	}
 
 }

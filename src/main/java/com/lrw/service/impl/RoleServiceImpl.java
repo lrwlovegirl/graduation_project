@@ -2,6 +2,8 @@ package com.lrw.service.impl;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +76,21 @@ public class RoleServiceImpl implements RoleService{
 	@Override
 	public void addMenuToRole(Integer rid, Integer mid) {
 		roleMapper.addMenuToRole(rid,mid);
+	}
+
+
+
+	@Override
+	public boolean findRoleByName(@NotNull String rname) {
+		
+		return null==roleMapper.findRoleByName(rname);
+	}
+
+
+
+	@Override
+	public void addRole(@NotNull String rname) {
+		roleMapper.addRole(rname);
 	}
 
 }

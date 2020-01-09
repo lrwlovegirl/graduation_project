@@ -2,6 +2,8 @@ package com.lrw.controller;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +19,7 @@ import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
 import com.lrw.vo.Role;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -114,4 +117,25 @@ public class RoleController {
 		}
     	return res;
 	}
+    @ApiOperation("增加角色")
+    @PostMapping("/addRole")
+    public ReturnRes addRole(@RequestParam("rname") @NotNull String rname) {
+    	ReturnRes res = new ReturnRes();
+    	boolean flag = roleServiceImpl.findRoleByName(rname);
+    	if(flag) {//为空
+    		try {
+    			roleServiceImpl.addRole(rname);
+    			res.setMsg("增加成功");
+    			res.setSuccess(true);
+    		}catch(Exception e){
+    			res.setMsg("增加失败,系统异常");
+    			res.setSuccess(false);
+    		}
+    	}else {//存在该角色
+    		res.setMsg("增加失败，已存在该角色");
+    		res.setSuccess(false);
+    	}
+    	return res;
+    }
+
 }

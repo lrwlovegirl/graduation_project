@@ -25,6 +25,10 @@ public interface QuestionService {
 	
 	List<Question> selectQuestionByQids(@NotNull Integer[] qids);
 	
+	void createQuestionList(List<Question> questionList);
+	//根据查询出所有的试题，包括其他用户上传的
+	List<Question> findAllQuestionByType(int type);
+	
 	
   
 
