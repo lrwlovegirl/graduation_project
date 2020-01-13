@@ -32,7 +32,7 @@ public class Question implements Serializable{
 	private String optionD;//选项D
 	private String analysis="~本题目没有解析呦~";//题目解析
 	private Integer qbid;//所属题库编号
-	
+	private Integer score;//分值,数据库不会进行保存该字段
 	public String writeToDoc() {
 		StringBuffer str = new StringBuffer(this.title+"\r\n"); 
 		if(null!=content&&!("".equals(content.trim()))) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.net.TelnetAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
 import com.lrw.vo.Question;
+import com.lrw.vo.TestPage;
 
 @RestController
 @RequestMapping("/Question")
@@ -64,7 +66,6 @@ public class QuestionController {
 		return res;
 	}
 
-
 	//查询出单个问题
 	@PostMapping("/findQuestionByQid")
 	public Question findQuestionByQid(int Qid) {
@@ -108,8 +109,13 @@ public class QuestionController {
 
     //生成试卷
 	@PostMapping("/selectQuestion")
-	public boolean selectQuestion(@RequestParam("username")String username,@RequestParam("tids[]")Integer[] tids,@RequestParam("questionTypeNumbers[]")Integer[] questionTypeNumbers) {
+	public boolean selectQuestion(@RequestParam("topic")String topic ,@RequestParam("username")String username,@RequestParam("tids[]")Integer[] tids,
+			@RequestParam("questionTypeNumbers[]")Integer[] questionTypeNumbers,
+			@RequestParam("questionScore[]")Integer[] questionScore) {
 		List<Question> randomQuestionList = new ArrayList<Question>();
+		TestPage testPage = new TestPage();
+		testPage.setTopic(topic);
+		List<String> titleExplainList = new ArrayList();
 		try {
 			for(int x=0;x<questionTypeNumbers.length;x++) {
 				if(questionTypeNumbers[x]>0) {
@@ -123,32 +129,39 @@ public class QuestionController {
 					}
 					//随机选出questionTypeNumbers[x]条
 					if(questionTypeNumbers[x]>=questionList.size()) {//如果超过了数据库中有的题型，那么将所有该类型的题目都给用户
+						for(int i=0;i<questionList.size();i++) {
+							questionList.get(i).setScore(questionScore[x]);
+						}
+						String titleExplain = questionList.get(0).getQuestiontype()+",每题"+questionList.get(0).getScore()+"分";
+						titleExplainList.add(titleExplain);
 						randomQuestionList.addAll(questionList);
-						//randomQuestionMap.put(username, randomQuestionList);
 					}else {
 						//随机取出x条
 						//这里取出的是题目的索引
 						List<Integer> randomNumberList = NumberUtils.getRandomNumberList(questionList.size(), questionTypeNumbers[x]);
 						List<Question> realRandomQuestionList = new ArrayList<Question>();
+						//获取随机的该类型的题目
 						for (int i = 0; i < randomNumberList.size(); i++) {
 							int index = randomNumberList.get(i);
 							Question vo = questionList.get(index);
+							vo.setScore(questionScore[x]);
 							realRandomQuestionList.add(vo);
 						}
+						
 						randomQuestionList.addAll(realRandomQuestionList);
 					}//else结束 不需要全部
 				}//用户需要这个题型的题
 			}//for循环  一个题型的结束
 			randomQuestionMap.put(username, randomQuestionList);//将用户的试卷存储进来
+			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
     //返回试卷结果
     @PostMapping("/getRandomTestPageByName")
     public ReturnRes getRandomTestPageByName(@RequestParam("username")String username){
-    	System.out.println("------------------------");
     	ReturnRes res = new ReturnRes();
     	try {
     		res.setMsg("生成成功");
