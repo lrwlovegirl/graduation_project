@@ -12,7 +12,11 @@ public interface TestPageService {
 
 	PageListRes queryAllTestPageByUserName(QueryVo qv);
 	
-	List addRandomTestPage(String tpid,Integer[] questionTypeNumbers,Integer[] questionScore,Integer[] tids);
+	boolean addRandomTestPage(String tpid,Integer[] questionTypeNumbers,Integer[] questionScore,Integer[] tids);
 	
 	void addRandTestPage(TestPage testPage);
+
+	boolean isRepeatTopicName(String topic, String username);
+
+	TestPage seeTestPaperDetailsByTpid(String tpid);
 }

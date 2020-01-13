@@ -9,4 +9,39 @@
     <select id="queryAllTestPageByUserName" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.TestPage">
        select * from testpage where createuser=#{publisher}
     </select>
+    
+   <insert id="addRealRandTestPage" parameterType="list">
+	    insert into tp_qt (tpid,qid,type,score,createtime)
+	    values
+	    <foreach item="item" index="index" collection="list" separator=",">
+	      (
+	       #{item.tpid},
+	       #{item.tid},
+	       #{item.type},
+	       #{item.score},
+	       #{item.createtime}
+	      )
+	    </foreach>
+	</insert>
+    
+    <select id="isRepeatTopicName" resultType="com.lrw.vo.TestPage">
+      select * from testpage where topic=#{topic} and createuser=#{username}
+    </select>
+    
+    <select id="findTestPaperByTpid" parameterType="string" resultType="com.lrw.vo.TestPage">
+       select * from testpage where tpid = #{tpid}
+    </select>
+    
+    <select id="findQidByTpid" parameterType="string" resultType="int">
+       select * from tp_qt where tpid =#{tpid}
+    </select>
+    
+    <select id="findTypeLenBytpid" parameterType="string" resultType="int">
+     select count(*) FROM ( select count(*) FROM tp_qt where tpid=#{tpid}  GROUP BY type ) as type 
+    </select>
+    
+    <select id="findTypeListByTpid" resultType="int">
+       SELECT DISTINCT type FROM tp_qt 
+    </select>
+    
 </mapper>  

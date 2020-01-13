@@ -32,6 +32,9 @@ public interface QuestionMapper {
 
 	List<Question> findAllQuestionByType(int type);
 
+	List<Question> selectBatchQuestionByTypeAndTpid(String tpid, int type);
+
+
 
 
 }

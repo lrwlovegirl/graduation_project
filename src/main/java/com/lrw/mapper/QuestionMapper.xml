@@ -67,5 +67,12 @@
 	<select id="findAllQuestionByType" parameterType="int" resultType="com.lrw.vo.Question">
 	      select * from question where type =#{type} 
 	</select>
+	
+	
+	<select id="selectBatchQuestionByTypeAndTpid"  resultType="com.lrw.vo.Question">
+	     select tp_qt.qid ,title,optionA,optionB,optionC,optionD,score,question.type, question.answer,question.questiontype  FROM tp_qt ,question WHERE tp_qt.qid = question.qid and tp_qt.tpid=#{tpid} 
+	     and tp_qt.type=#{type}
+	</select>
+	
 
 </mapper>  

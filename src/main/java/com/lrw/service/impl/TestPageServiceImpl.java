@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.graphbuilder.struc.LinkedList;
 import com.lrw.mapper.QuestionMapper;
 import com.lrw.mapper.TestPageMapper;
 import com.lrw.service.TestPageService;
@@ -26,11 +27,11 @@ public class TestPageServiceImpl implements TestPageService {
 	private QuestionMapper questionMapper;
 	
 	/**
-	 * 要处理试卷，将一张试卷的所有格式和内容都处理好
-	 * @param randomQuestionList 已经处理好的题型
+	 * 
+	 * @param 检查试卷名称是否相同
 	 */
-	public void handleTestPage(List<Question> randomQuestionList) {
-		
+	public boolean isRepeatTopicName(String topic,String username) {
+		return testPageMapper.isRepeatTopicName(topic,username) == null;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class TestPageServiceImpl implements TestPageService {
 	//questionScore         每种题型的分值
 	//tids                  对应题型的id数组
     @Override
-	public List<QuestionTidAndType> addRandomTestPage(String tpid,Integer[] questionTypeNumbers, Integer[] questionScore,Integer[] tids) {
+	public boolean addRandomTestPage(String tpid,Integer[] questionTypeNumbers, Integer[] questionScore,Integer[] tids) {
 		//最后要返回的对像
     	List<QuestionTidAndType> list = new ArrayList<QuestionTidAndType>();
     	for(int x=0;x<tids.length;x++) {
@@ -87,12 +88,40 @@ public class TestPageServiceImpl implements TestPageService {
     			}
     		}
     	}
-		return list;
+		try {
+			testPageMapper.addRealRandTestPage(list);
+			return true;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public void addRandTestPage(TestPage testPage) {
 		testPageMapper.addRandTestPage(testPage);
+	}
+
+	@Override
+	public TestPage seeTestPaperDetailsByTpid(String tpid) {
+		TestPage testPage = testPageMapper.findTestPaperByTpid(tpid);
+		if(testPage == null ) {testPage = new TestPage();}
+		List<List<Question>> questionList = new ArrayList<>();
+		List<String> explainList = new ArrayList<>();
+		int len = testPageMapper.findTypeLenBytpid(tpid);//试卷中类型数量
+		List<Integer> typeList = new ArrayList<>();
+		if(len>0) {typeList = testPageMapper.findTypeListByTpid(tpid);}//查询出所有的类型
+		//根据类型和tpid查询出题目
+		for(int x=0;x<typeList.size();x++) {
+			int type = typeList.get(x);
+			List<Question> batchList = questionMapper.selectBatchQuestionByTypeAndTpid(tpid,type);
+			String explain = "本题为"+batchList.get(0).getQuestiontype()+",每题"+batchList.get(0).getScore()+"分";
+			explainList.add(explain);
+			questionList.add(batchList);
+		}
+		testPage.setQuestionList(questionList);
+		testPage.setTitleExplain(explainList);
+		return testPage;
 	}
 	
 	
