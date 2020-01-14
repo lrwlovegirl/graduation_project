@@ -25,4 +25,6 @@ public interface TestPageMapper {
 	int findTypeLenBytpid(String tpid);
 
 	List<Integer> findTypeListByTpid(String tpid);
+
+	void deleteTestPaperByTpid(String tpid);
 }

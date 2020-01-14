@@ -123,6 +123,11 @@ public class TestPageServiceImpl implements TestPageService {
 		testPage.setTitleExplain(explainList);
 		return testPage;
 	}
+
+	@Override
+	public void deleteTestPaperByTpid(String tpid) {
+		testPageMapper.deleteTestPaperByTpid(tpid);
+	}
 	
 	
 	

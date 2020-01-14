@@ -44,4 +44,7 @@
        SELECT DISTINCT type FROM tp_qt 
     </select>
     
+    <delete id="deleteTestPaperByTpid" parameterType="string">
+      delete from testpage where tpid =#{tpid}
+    </delete>
 </mapper>  

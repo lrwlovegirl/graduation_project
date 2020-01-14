@@ -73,14 +73,25 @@ public class TestPaperController {
 		}
 		return res;
 	}
-	
 	@PostMapping("/seeTestPaperDetailsByTpid")
     public TestPage seeTestPaperDetailsByTpid(@RequestParam("tpid")String tpid) {
-		 System.out.println("~~~~~~~~~~~~~~~~~");
     	 return testPageServiceImpl.seeTestPaperDetailsByTpid(tpid);
     }
 	
-	
+	@PostMapping("/deleteTestPaperBytpid")
+	public ReturnRes deleteTestPageByTpid(@RequestParam("tpid")String tpid) {
+		ReturnRes res = new ReturnRes();
+		try {
+			testPageServiceImpl.deleteTestPaperByTpid(tpid);
+			res.setMsg("删除成功");
+			res.setSuccess(true);
+		}catch (Exception e) {
+		  e.printStackTrace();
+          res.setSuccess(false);
+          res.setMsg("系统异常，请稍后再试");
+		}
+		return res;
+	}
 	
 	
 	

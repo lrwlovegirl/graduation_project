@@ -19,4 +19,6 @@ public interface TestPageService {
 	boolean isRepeatTopicName(String topic, String username);
 
 	TestPage seeTestPaperDetailsByTpid(String tpid);
+
+	void deleteTestPaperByTpid(String tpid);
 }

@@ -28,4 +28,19 @@ public class WriteDoc{
 			}
 		}
 	}
+	
+    public static void exportTestPage(StringBuffer sbf,String name) throws Exception {
+    	File file = new File("C:\\Users\\Administrator\\Desktop\\"+name);
+    	if(!file.exists()) {
+    		file.createNewFile();
+			FileInputStream in = new FileInputStream(file);
+			FileOutputStream out=new FileOutputStream(file);
+			if(sbf!=null) {
+				byte data[] = sbf.toString().getBytes();
+				out.write(data); 							// 3．输出内容
+				out.close();	
+			}
+    	}
+    }	
+	
 }
