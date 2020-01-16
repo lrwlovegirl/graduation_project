@@ -3,7 +3,7 @@
 <mapper namespace="com.lrw.mapper.TestPageMapper">
 	
 	<insert id="addRandTestPage" parameterType="com.lrw.vo.TestPage">
-	 insert into testpage (tpid,topic,createuser,createtime) values (#{tpid},#{topic},#{createuser},#{createtime})
+	 insert into testpage (tpid,topic,createuser,createtime,createtype) values (#{tpid},#{topic},#{createuser},#{createtime},#{createtype})
 	</insert>
     
     <select id="queryAllTestPageByUserName" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.TestPage">

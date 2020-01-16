@@ -21,4 +21,6 @@ public interface TestPageService {
 	TestPage seeTestPaperDetailsByTpid(String tpid);
 
 	void deleteTestPaperByTpid(String tpid);
+
+	TestPage artificalTestPaper(Integer[] qt,String username,String topic,String uuid);
 }

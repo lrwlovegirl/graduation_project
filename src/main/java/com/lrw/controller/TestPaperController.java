@@ -1,6 +1,9 @@
 package com.lrw.controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,8 @@ import com.lrw.vo.TestPage;
 public class TestPaperController {
     @Autowired
 	private TestPageService testPageServiceImpl;
+    
+    private Map<String,TestPage> testPageMap = new ConcurrentHashMap<>() ;
 
     @PostMapping("/queryAllTestPageByUserName")
 	public PageListRes queryAllTestPageByUserName(QueryVo queryVo) {
@@ -43,6 +48,7 @@ public class TestPaperController {
 		try {
 			String uuid = UUID.randomUUID().toString().substring(0, 10);
 			testPage.setTopic(topic);
+			testPage.setCreatetype(0);
 			testPage.setCreateuser(username);
 			testPage.setTpid(uuid);
 			testPageServiceImpl.addRandTestPage(testPage);//将试卷保存起来
@@ -93,10 +99,25 @@ public class TestPaperController {
 		return res;
 	}
 	
-	
-	
-	
-	
+	//用户指定一张试卷的题型，按照将本类所有的题型返给他
+	@PostMapping("/artificalQt")
+    public String artificalTestPaper(@RequestParam("qt[]")Integer[] qt,@RequestParam("username")String username,@RequestParam("topic")String topic) {
+        TestPage testPage  = new TestPage();
+        String uuid = UUID.randomUUID().toString().substring(0,10);
+		try {
+            testPage = testPageServiceImpl.artificalTestPaper(qt,username,topic,uuid);
+            testPageMap.put(uuid, testPage);
+        }catch (Exception e) {
+           e.printStackTrace();
+           TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚 
+        }
+    	return uuid;
+    }
+	@PostMapping("/displayTestPageFromMap")
+	public TestPage displayTestPageFromMap(@RequestParam("uuid")String uuid) {
+		System.out.println(uuid);
+		return testPageMap.get(uuid);
+	}
 	
 	
 	

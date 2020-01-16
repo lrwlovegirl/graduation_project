@@ -15,6 +15,7 @@ public class TestPage {
 	private String topic;//试卷的标题
 	private List<String> titleExplain;//题目注释
 	private List<List<Question>> questionList;//将每种题型分别存储
+	private Integer createtype ;//生成方式
 	
 	public StringBuffer exportTestPage() { 
 		StringBuffer sbf = new StringBuffer("                             "+topic+"\r\n"+"                                               ");

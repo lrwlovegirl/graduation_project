@@ -2,9 +2,11 @@ package com.lrw.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -127,6 +129,40 @@ public class TestPageServiceImpl implements TestPageService {
 	@Override
 	public void deleteTestPaperByTpid(String tpid) {
 		testPageMapper.deleteTestPaperByTpid(tpid);
+	}
+
+	@Override
+	public TestPage artificalTestPaper(Integer[] qt,String username,String topic,String uuid) {
+		List<List<Question>> questionList = new java.util.LinkedList<List<Question>>();
+		List<String> explainList = new java.util.LinkedList<String>();
+		for(int x=0;x<qt.length;x++) {
+			List<Question> realquestionList = questionMapper.findAllQuestionByType(qt[x]);
+			if(!realquestionList.isEmpty()) {
+				questionList.add(realquestionList);
+				String explain =  "";
+				if(realquestionList.get(0).getQuestiontype().contains("选")) {
+					explain = "已为您列出所有的"+realquestionList.get(0).getQuestiontype()+",请选择具体题目(选择题部分选项过长不予显示)：";
+				}else {
+					explain = "已为您列出所有的"+realquestionList.get(0).getQuestiontype()+",请选择具体题目：";
+				}
+				explainList.add(explain);
+			}
+		}
+		TestPage testPage = new TestPage();
+		testPage.setTpid(uuid);
+		testPage.setCreatetype(1);
+		testPage.setTopic(topic);
+		testPage.setCreateuser(username);
+		testPage.setTitleExplain(explainList);
+		testPage.setQuestionList(questionList);
+		//要等到用户选好了才能去保存
+//		try {
+//			testPageMapper.addRandTestPage(testPage);
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚 
+//		}
+		return testPage;
 	}
 	
 	
