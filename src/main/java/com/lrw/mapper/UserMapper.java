@@ -36,5 +36,7 @@ public interface UserMapper {
   
   void updateUserLastLoginTime(String username,String time);
   
+  void changePassword(String username, String password);
+  
   
 }

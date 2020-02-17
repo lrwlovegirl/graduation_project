@@ -2,7 +2,6 @@ package com.lrw.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +9,13 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.graphbuilder.struc.LinkedList;
 import com.lrw.mapper.QuestionMapper;
 import com.lrw.mapper.TestPageMapper;
 import com.lrw.service.TestPageService;
 import com.lrw.util.NumberUtils;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
+import com.lrw.util.ReturnRes;
 import com.lrw.vo.Question;
 import com.lrw.vo.QuestionTidAndType;
 import com.lrw.vo.TestPage;
@@ -165,7 +164,49 @@ public class TestPageServiceImpl implements TestPageService {
 		return testPage;
 	}
 	
-	
+	//为人工生成的试卷中的每道题目设置分值，然后保存
+	public boolean saveArtificalTpQuestionList(String uuid,List<Question> questionList,TestPage testPage) {
+		 try {
+			 List<QuestionTidAndType> questionTidAndTypeList = new ArrayList();
+			  int a = 0;//不知道有几种题型，只能有一种题型不一样，就+1
+			  for(int x=0;x<questionList.size();x++) {
+				  QuestionTidAndType vo = new QuestionTidAndType();
+				  if(x==0) {//如果是第一个，那么第一道题对应的肯定是第一个分值
+					  Question question = questionList.get(x);
+					  vo.setTid(question.getQid());//设置问题编号
+					  vo.setScore(testPage.getQts()[a]);
+					  vo.setTpid(uuid);
+					  vo.setType(question.getType());
+					  questionTidAndTypeList.add(vo);
+				  }else {//如果不是第一个，那么要判断这道题目，是否和上一道题目的类型一样
+					  Question question = questionList.get(x);//本题
+					  Question lastQuestion = questionList.get(x-1);//上一道题
+					  if(question.getType()!=lastQuestion.getType()) {//和上道题不一样
+						  a=a+1;//分值数组加一
+						  vo.setTid(question.getQid());//设置问题编号
+						  vo.setScore(testPage.getQts()[a]);
+						  vo.setTpid(uuid);
+						  vo.setType(question.getType());
+						  questionTidAndTypeList.add(vo);
+					  }else {//和上道题一样
+						  vo.setTid(question.getQid());//设置问题编号
+						  vo.setScore(testPage.getQts()[a]);
+						  vo.setTpid(uuid);
+						  vo.setType(question.getType());
+						  questionTidAndTypeList.add(vo);
+					  }
+				  }
+			  }//for循环结束 -->遍历题目，为每道题目设置分值
+			  a=0;//重新设置a
+			  testPageMapper.addRealRandTestPage(questionTidAndTypeList);//保存试卷的具体题目
+			  testPageMapper.addRandTestPage(testPage);//保存试卷
+			  return true;
+		 }catch (Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚 
+			return false;
+		}
+	}
 	
 	
 }

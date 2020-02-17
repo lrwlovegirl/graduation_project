@@ -34,5 +34,9 @@ public interface UserService {
 	  
 	  void updateUserLastLoginTime(String username,String time);
 	  
+	  Boolean changePwd(String username, String oldPwd);
+	  
+	  void changePassword(String username, String password);
+	  
 	  
 }

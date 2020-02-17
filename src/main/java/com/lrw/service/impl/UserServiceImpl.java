@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lrw.mapper.UserMapper;
+import com.lrw.util.Md5Utils;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.vo.User;
@@ -118,6 +119,19 @@ public class UserServiceImpl implements com.lrw.service.UserService {
 	@Override
 	public void updateUserLastLoginTime(String username,String time) {
 		userMapper.updateUserLastLoginTime(username,time);
+	}
+
+	@Override
+	public Boolean changePwd(String username, String oldPwd) {
+		//将传过来的密码加密
+		oldPwd = Md5Utils.MD5Encode(oldPwd);
+		User user = userMapper.findUserByUsernameAndPassword(username, oldPwd);
+		return user==null;
+	}
+
+	@Override
+	public void changePassword(String username, String password) {
+		userMapper.changePassword(username,password);
 	}
 
 }

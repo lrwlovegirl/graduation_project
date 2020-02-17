@@ -21,5 +21,6 @@ public class User implements Serializable {
    private String reason;//封禁理由
    private String lastUseName ;//上次使用的用户名
    private String headPicture;//头像 存放的是路径
-   
+   private String address;//地址
+   private String telphone;//电话
 }

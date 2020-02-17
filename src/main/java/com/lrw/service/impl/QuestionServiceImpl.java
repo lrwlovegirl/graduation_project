@@ -75,8 +75,15 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public List<Question> selectQuestionByQids(@NotNull Integer[] qids) {
-		// TODO Auto-generated method stub
-		return questionMapper.selectQuestionByQids(qids);
+		List<Question> questionList = new ArrayList<>();
+		int len = qids.length;
+		for(int x=0;x<len;x++) {
+			Question question = questionMapper.findQuestionByQid(qids[x]);
+			if(question!=null) {
+				questionList.add(question);
+			}
+		}
+		return questionList;
 	}
 
 	@Override

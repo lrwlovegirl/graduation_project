@@ -16,6 +16,7 @@ public class TestPage {
 	private List<String> titleExplain;//题目注释
 	private List<List<Question>> questionList;//将每种题型分别存储
 	private Integer createtype ;//生成方式
+	private int[] qts;//该试卷含有的题型分值数组
 	
 	public StringBuffer exportTestPage() { 
 		StringBuffer sbf = new StringBuffer("                             "+topic+"\r\n"+"                                               ");

@@ -35,12 +35,12 @@
 	   where qid=#{qid}
 	</update>
 	
-<!-- 	<select id="selectQuestionByQids" parameterType="list" resultType="com.lrw.vo.Question">
+	<select id="selectQuestionByQids" parameterType="list" resultType="com.lrw.vo.Question">
 	  select * from Question where qid in 
-	   <foreach item="item" index="index" collection="qids" open="(" separator="," close=")">  
+	   <foreach item="item" index="index" collection="Array" open="(" separator="," close=")">  
 　　　　#{index}  
 　　     </foreach>
-	</select> -->
+	</select>
 	
 	
 	

@@ -65,5 +65,9 @@
     <update id="updateUserLastLoginTime">
        update user set lastlogintime=#{time} where username=#{username}
     </update>
+    
+    <update id="changePassword">
+       update user set password=#{password} where username = #{username}
+    </update>
 
 </mapper>  

@@ -74,14 +74,6 @@ public class UserController {
 		}
 		return queryUser;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	@PostMapping("/editUser")
 	public ReturnRes editUser(User user) {
 		ReturnRes res = new ReturnRes();
@@ -141,11 +133,50 @@ public class UserController {
 		}
 		return queryUser;
 	}
+    //检查是否能够修改密码
+	@PostMapping("/changePwd")
+	public ReturnRes checkPwd(@RequestParam("username")String username,@RequestParam("oldPwd")String oldPwd) {
+		ReturnRes res = new ReturnRes();
+		try {
+		    //
+			boolean flag = !userServiceImpl.changePwd(username,oldPwd);
+			if(flag) {
+				res.setSuccess(true);
+			}else {
+				res.setSuccess(false);
+				res.setMsg("输入密码错误，请重新输入");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			res.setSuccess(true);
+			res.setMsg("系统异常，请刷新后重试");
+		}
+		return res ;
+	}
+	@PostMapping("/changePassword")
+	public ReturnRes changePassword(@RequestParam("username")String username,@RequestParam("password")String password) {
+		password = Md5Utils.MD5Encode(password);//将新密码重新加密
+		ReturnRes res = new ReturnRes();
+		try {
+			userServiceImpl.changePassword(username,password);
+			res.setMsg("更改成功,请重新登录");
+			res.setSuccess(true);
+			res.setUrl("");
+		}catch (Exception e) {
+          e.printStackTrace();
+          res.setMsg("系统异常，请刷新后再试");
+          res.setSuccess(false);
+		}
+		return res;
+	}
 	
-	
-	
-	
-	
-	
+	@PostMapping("/findUserByUsername")
+	public User findUserByUsername(@RequestParam("username")String username) {
+		if(!username.isEmpty()) {
+			User user = userServiceImpl.findUserByUsername(username);
+			return user;
+		}
+		return null;
+	}
 	
 }

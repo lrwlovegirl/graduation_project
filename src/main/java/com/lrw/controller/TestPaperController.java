@@ -1,9 +1,12 @@
 package com.lrw.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lrw.service.QuestionService;
 import com.lrw.service.TestPageService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
+import com.lrw.vo.Question;
+import com.lrw.vo.QuestionTidAndType;
 import com.lrw.vo.TestPage;
 
 @RestController
@@ -27,7 +33,9 @@ import com.lrw.vo.TestPage;
 public class TestPaperController {
     @Autowired
 	private TestPageService testPageServiceImpl;
-    
+    @Autowired
+    private QuestionService questionServiceImpl;
+    //存储uuid的
     private Map<String,TestPage> testPageMap = new ConcurrentHashMap<>() ;
 
     @PostMapping("/queryAllTestPageByUserName")
@@ -95,17 +103,19 @@ public class TestPaperController {
 		  e.printStackTrace();
           res.setSuccess(false);
           res.setMsg("系统异常，请稍后再试");
+          TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚 
 		}
 		return res;
 	}
 	
 	//用户指定一张试卷的题型，按照将本类所有的题型返给他
 	@PostMapping("/artificalQt")
-    public String artificalTestPaper(@RequestParam("qt[]")Integer[] qt,@RequestParam("username")String username,@RequestParam("topic")String topic) {
+    public String artificalTestPaper(@RequestParam("qt[]")Integer[] qt,@RequestParam("qts[]")int[] qts,@RequestParam("username")String username,@RequestParam("topic")String topic) {
         TestPage testPage  = new TestPage();
         String uuid = UUID.randomUUID().toString().substring(0,10);
 		try {
             testPage = testPageServiceImpl.artificalTestPaper(qt,username,topic,uuid);
+            testPage.setQts(qts);
             testPageMap.put(uuid, testPage);
         }catch (Exception e) {
            e.printStackTrace();
@@ -119,8 +129,30 @@ public class TestPaperController {
 		return testPageMap.get(uuid);
 	}
 	
-	
-	
+	//为已经存在的试卷重新设置具体题目
+	@PostMapping("/addArtificalTpQuestions")
+	public ReturnRes addArtificalTpQuestions(@RequestParam("uuid")String uuid,@RequestParam("qtId[]") @NotNull Integer[] qtId ) {
+		TestPage testPage = testPageMap.get(uuid);
+		ReturnRes res = new ReturnRes();
+		if(testPage==null) {
+			res.setSuccess(false);
+		}else {
+			//遇到的问题：题目类型和题型分值对应不上-->第一种题型和第一个分值对应
+		  List<Question> questionList = questionServiceImpl.selectQuestionByQids(qtId);
+		  if(questionList==null||questionList.size()==0) {
+			  res.setSuccess(false);
+		  }else {
+			  boolean flag =testPageServiceImpl.saveArtificalTpQuestionList(uuid, questionList, testPage);
+			  if(flag) {//保存成功就移除map中的试卷
+				  testPageMap.remove(uuid); 
+				  res.setSuccess(true);
+			  }else {
+				  res.setSuccess(false);
+			  }
+		  }
+		}
+		return res;
+	}
 	
 	
 	
