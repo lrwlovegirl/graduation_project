@@ -14,33 +14,40 @@
 </head>
 <body class="childrenBody">
 <form class="layui-form">
-	<blockquote class="layui-elem-quote quoteBox">
 		<form class="layui-form">
-			<div class="layui-inline">
+			<div class="layui-inline ">
+				<a class="layui-btn layui-btn-danger" data-type="reload">搜索</a>
 				<div class="layui-input-inline">
 					<select id="type" name="type" lay-verify="" lay-search="" lay-filter="questiontypeFilter">
-					  <option value="1">填空题</option>
-					  <option value="0">选择题</option>
-					  <option value="2">设计题</option>
+					   <option value="全部">全部</option>
 					</select>
 				</div>
-				<a class="layui-btn search_btn" data-type="reload">类型搜索</a>
+				<div class="layui-input-inline">
+					<select id="qbname" name="qbname" lay-verify="" lay-search="" lay-filter="questionBankFilter">
+					    <option value="全部">全部</option>       
+					</select>
+				</div>
 			</div>
 			<div class="layui-inline">
 				<a class="layui-btn layui-btn-normal addNews_btn">添加题目</a>
 			</div>
-			<!-- <div class="layui-inline">
-				<a class="layui-btn layui-btn-danger layui-btn-normal delAll_btn">批量封禁</a>
-			</div> -->
+			<div class="layui-inline">
+				<a id="exportOutImpl" class="layui-btn layui-btn-warm" lay-event="exportOutImpl">批量导出</a> 
+			</div>
+			<div class="layui-inline">
+				<button type="button" name="excel" class="layui-btn layui-btn-primary" id="excel"><i class="layui-icon"></i>批量导入</button>
+			</div>
 		</form>
-	</blockquote>
 	<table id="questionList" lay-filter="questionList"></table>
 	<!--操作-->
-	<script type="text/html" id="questionListBar">
-		 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-	</script>
-</form>
 <script type="text/javascript" src="../../layui/layui.js"></script>
 <script type="text/javascript" src="js/questionList.js"></script>
+<script type="text/javascript" src="../../js/login.js"></script>
+<script type="text/html" id="questionListBar">
+		 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+<script id="exportOut" type="text/html" >
+	<a id="exportOutImpl" class="layui-btn layui-btn-warm" lay-event="exportOutImpl">批量导出</a> 
+</script>
 </body>
 </html>

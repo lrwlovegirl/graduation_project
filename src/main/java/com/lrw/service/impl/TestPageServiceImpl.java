@@ -109,13 +109,15 @@ public class TestPageServiceImpl implements TestPageService {
 		if(testPage == null ) {testPage = new TestPage();}
 		List<List<Question>> questionList = new ArrayList<>();
 		List<String> explainList = new ArrayList<>();
-		int len = testPageMapper.findTypeLenBytpid(tpid);//试卷中类型数量
+		int len = testPageMapper.findTypeLenBytpid(tpid);//试卷中题目类型数量
 		List<Integer> typeList = new ArrayList<>();
 		if(len>0) {typeList = testPageMapper.findTypeListByTpid(tpid);}//查询出所有的类型
 		//根据类型和tpid查询出题目
 		for(int x=0;x<typeList.size();x++) {
 			int type = typeList.get(x);
+			
 			List<Question> batchList = questionMapper.selectBatchQuestionByTypeAndTpid(tpid,type);
+			
 			String explain = "本题为"+batchList.get(0).getQuestiontype()+",每题"+batchList.get(0).getScore()+"分";
 			explainList.add(explain);
 			questionList.add(batchList);

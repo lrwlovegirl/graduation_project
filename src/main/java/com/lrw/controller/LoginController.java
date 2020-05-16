@@ -25,7 +25,7 @@ public class LoginController {
 	private UserService userServiceImpl;
 	//还要将这个用户对应的菜单返回去
     @PostMapping("/userLogin")
-	public ReturnRes login(String username,String password,HttpServletRequest request,HttpServletResponse response) {
+	public ReturnRes login(String username,String password) {
     	ReturnRes res = new ReturnRes();
     	try {
     		password = Md5Utils.MD5Encode(password);

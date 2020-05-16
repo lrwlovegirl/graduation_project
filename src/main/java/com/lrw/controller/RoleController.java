@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrw.service.RoleService;
+import com.lrw.service.UserService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
 import com.lrw.vo.Role;
+import com.lrw.vo.User;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,8 @@ import io.swagger.annotations.ApiOperation;
 public class RoleController {
     @Autowired
 	private RoleService roleServiceImpl;
+    @Autowired
+    private UserService userService;
 	
     @ApiOperation("获取所有的角色")
 	@GetMapping("/queryAllRole")
@@ -44,9 +48,14 @@ public class RoleController {
 	
     @ApiOperation("查询出全部角色和用户已有角色，为已有角色打上标记")
 	@PostMapping("/queryRoleById")
-	public List<Role> queryRoleById(Integer id){
-		//查出所有的角色
-		List<Role> allRole = roleServiceImpl.findAllRolePlus();
+	public List<Role> queryRoleById(Integer id,String username){
+    	User user = userService.findUserByUsername(username);
+    	Integer userId = null;
+    	if(user!=null) {
+    		userId =user.getId();
+    	}
+		//查出用户能够看到所有的角色
+		List<Role> allRole = roleServiceImpl.findAllRolePlus(userId);
 		//用户具有的角色
 		List<Role> userRole = roleServiceImpl.queryRoleById(id);
 		for(int x=0;x<allRole.size();x++) {

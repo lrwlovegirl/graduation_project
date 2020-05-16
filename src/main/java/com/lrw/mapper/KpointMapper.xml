@@ -11,7 +11,7 @@
 	</select>
 	
 	<insert id="addKpoint" parameterType="com.lrw.vo.Kpoint">
-	   insert into Kpoint (kname,createuser,createtime) values (#{kname},#{createuser},#{createtime})
+	   insert into Kpoint (kname,createuser,kpointexplain,createtime) values (#{kname},#{createuser},#{kpointexplain},#{createtime})
 	</insert>
 
     <select id="findKpointBykid" parameterType="int" resultType="com.lrw.vo.Kpoint">

@@ -76,6 +76,9 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
 
 	@Override
 	public List<QuestionType> queryAllEnableQT(String username) {
+		
+		
+		
 		// TODO Auto-generated method stub
 		return questionTypeMapper.queryAllEnableQT(username);
 	}

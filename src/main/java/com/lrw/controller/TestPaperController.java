@@ -135,19 +135,22 @@ public class TestPaperController {
 		TestPage testPage = testPageMap.get(uuid);
 		ReturnRes res = new ReturnRes();
 		if(testPage==null) {
+			res.setMsg("生成失败,请稍后再试");
 			res.setSuccess(false);
 		}else {
-			//遇到的问题：题目类型和题型分值对应不上-->第一种题型和第一个分值对应
 		  List<Question> questionList = questionServiceImpl.selectQuestionByQids(qtId);
 		  if(questionList==null||questionList.size()==0) {
+			  res.setMsg("生成失败,请稍后再试");
 			  res.setSuccess(false);
 		  }else {
 			  boolean flag =testPageServiceImpl.saveArtificalTpQuestionList(uuid, questionList, testPage);
 			  if(flag) {//保存成功就移除map中的试卷
 				  testPageMap.remove(uuid); 
 				  res.setSuccess(true);
+				  res.setMsg("生成成功,请刷新列表查看");
 			  }else {
 				  res.setSuccess(false);
+				  res.setMsg("生成失败,请稍后再试");
 			  }
 		  }
 		}

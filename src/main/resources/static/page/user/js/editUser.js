@@ -14,7 +14,7 @@ layui.use(['form', 'layer'], function() {
 			icon: 3,
 			title: '提示'
 		}, function(index) {
-			$.post("http://10.2.244.72:8080/User/editUser", {
+			$.post("http://localhost:8080/User/editUser", {
 				id: id,
 				username: username, //登录名
 				email: email, //邮箱

@@ -10,6 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/login1.css">
 		<script type="text/javascript" src="../../layui/layui.all.js"></script>
 		<script type="text/javascript" src="../../js/Jquery-3.4.js"></script>
+        <script type="text/javascript" src="../../js/jquery.cookie.js"></script>
 	</head>
 
 	<body>
@@ -18,7 +19,7 @@
 			<div class="box">
 				<div class="left">
 					<img src="../../images/logo.png" />
-					<p>Java题库后台登录</p>
+					<p>Java题库登录</p>
 				</div>
 				<div class="right">
 					<div class="layui-form layui-form-pane">
@@ -56,14 +57,17 @@
 			    }else{
 			 	   $.ajax({
 			 		   type:"post",
-			 		   url:"/Login/adminLogin",
+			 		   url:"http://localhost:8080/login/userLogin",
 			 		   data:{username:username,password:password},
 			 		   dataType:"json",
 			 		   success:function(data){
 			 			   layer.msg(data.msg, {
 			 			        time: 1000
 			 			      });
-			 			   setTimeout(function(){window.location.href=data.url;},1000)
+							if(data.success){
+								$.cookie('username', username, { path: '/' });
+								setTimeout(function(){window.location.href=data.url;},1000)
+							}  
 			 		   }
 			 	   })
 			    }

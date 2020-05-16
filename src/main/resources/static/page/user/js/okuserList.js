@@ -4,20 +4,18 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 		$ = layui.jquery,
 		laytpl = layui.laytpl,
 		table = layui.table;
-
 	//用户列表
 	var tableIns = table.render({
 		elem: '#userList',
-		url: 'http://10.2.244.72:8080/User/queryUserByKeyword',
+		url: 'http://localhost:8080/User/queryUserByKeyword',
 		cellMinWidth: 95,
-		method:"post",
+		method: "post",
 		page: {
 			layout: ['count', 'prev', 'page', 'next'],
 			curr: 1, //设定初始在第 1 页
 			limit: 10, //每页多少数据
 			groups: 5 //只显示 5 个连续页码
 		},
-		
 		height: "full-125",
 		limits: [10, 15, 20, 25],
 		limit: 20,
@@ -47,25 +45,6 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 					align: 'center'
 				},
 				{
-					field: 'level',
-					title: '用户等级',
-					align: 'center',
-					width: 150,
-					templet: function(d) {
-						if (d.level == "0") {
-							return "注册会员";
-						} else if (d.level == "1") {
-							return "中级会员";
-						} else if (d.level == "2") {
-							return "高级会员";
-						} else if (d.level == "3") {
-							return "钻石会员";
-						} else if (d.level == "4") {
-							return "超级会员";
-						}
-					}
-				},
-				{
 					field: 'email',
 					title: '用户邮箱',
 					align: 'center',
@@ -75,7 +54,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 					}
 				},
 				{
-					field: 'userEndTime',
+					field: 'lastLoginTime',
 					title: '最后登录时间',
 					align: 'center',
 					minWidth: 150
@@ -101,7 +80,6 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			]
 		]
 	});
-
 	//搜索【此功能需要后台配合，所以暂时没有动态效果演示】
 	$(".search_btn").on("click", function() {
 		if ($(".searchVal").val() != '') {
@@ -118,8 +96,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			layer.msg("请输入搜索的内容");
 		}
 	});
-
-	//添加用户
+	//打开添加用户
 	function addUser(edit) {
 		var index = layui.layer.open({
 			title: "添加用户",
@@ -150,15 +127,10 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			layui.layer.full(window.sessionStorage.getItem("index"));
 		})
 	}
-
-
-
-
-
+	//点击打开增加用户页面
 	$(".addNews_btn").click(function() {
 		addUser();
 	})
-
 	//批量封禁/解封
 	$(".delAll_btn").click(function() {
 		var checkStatus = table.checkStatus('userListTable'),
@@ -173,7 +145,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 				title: '提示信息'
 			}, function(index) {
 				$.ajax({
-					url: "http://10.2.244.72:8080/User/changeStatus",
+					url: "http://localhost:8080/User/changeStatus",
 					data: {
 						array: newsId
 					},
@@ -184,10 +156,10 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 					async: false,
 					success: function(data) {
 						layer.msg(data.msg, {
-						 	 	time: 2000
-					 });
-					  tableIns.reload();
-					  layer.close(index);
+							time: 2000
+						});
+						tableIns.reload();
+						layer.close(index);
 					}
 				})
 			})
@@ -195,13 +167,15 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			layer.msg("请选择需要封禁的用户");
 		}
 	})
-
 	//列表操作
 	table.on('tool(userList)', function(obj) {
 		var layEvent = obj.event,
 			data = obj.data;
 		if (layEvent === 'edit') { //编辑
 			editUser(data);
+		}
+		if (layEvent === 'editRole') { //给用户配置角色
+			userEditRole(data);
 		}
 	});
 	//编辑用户信息
@@ -216,8 +190,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 				body.find("#id").val(data.id); //id
 				body.find("#username").val(data.username); //登录名
 				body.find("#email").val(data.email); //邮箱
-				body.find(".userSex input[value=" + data.sex + "]").prop("checked", "checked"); //性别
-				body.find("#level").val(data.level); //会员等级
+				body.find("#sex input[value=" + data.sex + "]").prop("checked", "checked"); //性别
 				body.find("#status").val(data.status); //用户状态
 				body.find("#descrition").text(data.descrition); //用户简介
 				form.render();
@@ -232,7 +205,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 	//更改用户状态
 	function changeUserStatus(data) {
 		$.ajax({
-			url: "http://10.2.244.72:8080/User/changeStatus",
+			url: "http://localhost:8080/User/changeStatus",
 			data: {
 				array: data
 			},
@@ -243,20 +216,69 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			async: false,
 			success: function(data) {
 				layer.msg(data.msg, {
-				 	 	time: 2000
-			 });
-			  tableIns.reload();
-			  layer.close(index);
+					time: 2000
+				});
+				tableIns.reload();
+				layer.close(index);
+				window.location.reload();
 			}
 		})
 	}
 	//锁定解锁用户	
 	form.on('checkbox(lockDemo)', function(obj) {
-		 layer.confirm("确定要执行该操作吗?", function(index) {
-			var userid=obj.value;
-			changeUserStatus(userid)
-		 })
+		layer.confirm("确定要执行该操作吗?", function(index) {
+			var userid = obj.value;
+			changeUserStatus(userid);
+		})
 	});
+	//点击打开配置角色页面
+	function userEditRole(data) {
 
-
+		var userid = data.id; //得到用户id
+		index3 = layui.layer.open({
+			title: "配置角色",
+			type: 2,
+			id: 'index3',
+			content: "../userList/userEditRole.html",
+			area: ['50%', '30%'],
+			success: function(layero, indexEditUser) { //弹出后回调函数
+				var body = layui.layer.getChildFrame('body', indexEditUser); //得到子页面
+				body.find("#id").val(data.id); //id
+				form.render();
+				setTimeout(function() {
+					layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+						tips: 3
+					});
+				}, 500)
+			}
+		})
+	}
+	//给用户配置角色
+	form.on("submit(editRole)", function(data) {
+		var id = $("#id").val();
+		var roleId = [];
+		$('input[type=checkbox]:checked').each(function() {
+			roleId.push($(this).val());
+		});
+		if (id != null || id != undefined) {
+			$.ajax({
+				url: "http://localhost:8080/role/updateUserRoleById",
+				data: {
+					roleId: roleId,
+					id: id
+				},
+				dataType: "json",
+				type: "post",
+				traditional: true, //防止深度序列化
+				cache: false,
+				async: false,
+				success: function(data) {
+					layer.msg(data.msg, {
+						time: 2000
+					});
+					parent.location.reload();
+				}
+			})
+		}
+	})
 })

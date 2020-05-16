@@ -36,6 +36,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	@Override
 	public void addQuestionBank(QuestionBank questionBank) {
 		// TODO Auto-generated method stub
+		
 		questionBankMapper.addQuestionBank(questionBank);
 	}
 
@@ -67,6 +68,19 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	public List<QuestionBank> selectAllEnableQBByUserName(String username) {
 		// TODO Auto-generated method stub
 		return questionBankMapper.selectAllEnableQBByUserName(username);
+	}
+
+	@Override
+	public boolean isRepeateName(String name,String username) {
+		if(null==name||name.trim().length()==0) {
+			return false;
+		}else {
+			QuestionBank questionbank = questionBankMapper.isRepeateName(name,username);
+			if(questionbank==null||questionbank.getQbid()==null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

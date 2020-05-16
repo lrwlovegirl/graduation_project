@@ -30,19 +30,27 @@ public class UserController {
 		user.setPassword(password);
 		ReturnRes res = new ReturnRes();
 		try {
-			userServiceImpl.createUser(user);
-			res.setSuccess(true);
-			res.setMsg("添加成功");
+			String username = user.getUsername();
+			boolean flag = userServiceImpl.isRepateUser(username);
+			if(!flag) {
+				res.setSuccess(false);
+				res.setMsg("用户名重复啦，请换一个吧");
+			}else {
+				userServiceImpl.createUser(user);
+				res.setSuccess(true);
+				res.setMsg("添加成功");
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 			res.setSuccess(false);
-			res.setMsg("添加失败");
+			res.setMsg("系统异常，添加失败");
 		}
 		return res;
 	}
 	
 	@GetMapping("/queryAllUser")
 	public PageListRes queryAllUser(QueryVo qv){
+		System.out.println("########################################");
 		PageListRes queryUser =null;
 		try {
 			queryUser= userServiceImpl.findAllUser(qv);
@@ -178,5 +186,19 @@ public class UserController {
 		}
 		return null;
 	}
+	
+	@PostMapping("queryAllAdmin")
+	public PageListRes queryAllAdmin(QueryVo qv) {
+		PageListRes queryUser =null;
+		try {
+			queryUser= userServiceImpl.findAllAdmin(qv);
+		}catch (Exception e) {
+			queryUser = new PageListRes();
+			e.printStackTrace();
+		}
+		return queryUser;
+	}
+	
+	
 	
 }

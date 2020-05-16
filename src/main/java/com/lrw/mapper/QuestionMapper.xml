@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lrw.mapper.QuestionMapper">
 	<insert id="createQuestion" parameterType="com.lrw.vo.Question">
-	   insert into question (title,content,answer,type,about,publisher,masteryLevel,difficultyLevel,optionA,optionB,optionC,optionD,analysis,questiontype) 
+	   insert into question (title,content,answer,type,about,publisher,masteryLevel,difficultyLevel,optionA,optionB,optionC,optionD,analysis,questiontype,birthday,qbid) 
 	   values
-	   (#{title},#{content},#{answer},#{type},#{about},#{publisher},#{masteryLevel},#{difficultyLevel},#{optionA},#{optionB},#{optionC},#{optionD},#{analysis},#{questiontype})
+	   (#{title},#{content},#{answer},#{type},#{about},#{publisher},#{masteryLevel},#{difficultyLevel},#{optionA},#{optionB},#{optionC},#{optionD},#{analysis},#{questiontype},#{birthday},#{qbid})
 	</insert>
 	
 	<select id="queryQuestionByKeyword" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.Question">
@@ -30,8 +30,8 @@
 	</select>
 	
 	<update id="updateQuestion" parameterType="com.lrw.vo.Question">
-	   update question set title=#{title},content=#{content},answer=#{answer},type=#{type},about=#{about},publisher=#{publisher},difficultyLevel=#{difficultyLevel}
-	   ,analysis=#{analysis},optionA=#{optionA},optionB=#{optionB},optionC=#{optionC},optionD=#{optionD}
+	   update question set title=#{title},content=#{content},answer=#{answer},type=#{type},about=#{about},difficultyLevel=#{difficultyLevel}
+	   ,analysis=#{analysis},optionA=#{optionA},optionB=#{optionB},optionC=#{optionC},optionD=#{optionD},qbid=#{qbid},questiontype=#{questiontype}
 	   where qid=#{qid}
 	</update>
 	

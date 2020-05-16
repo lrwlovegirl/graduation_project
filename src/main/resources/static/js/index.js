@@ -15,9 +15,11 @@ layui.use(['bodyTab', 'form', 'element', 'layer', 'jquery'], function() {
 
 	//通过顶部菜单获取左侧二三级菜单   注：此处只做演示之用，实际开发中通过接口传参的方式获取导航数据
 	function getData(json) {
+		var username =getCookie("username")
 		$.ajax({
-			url: 'http://10.2.244.72:8080/Menu/getMenuByUid',
+			url: 'http://localhost:8080/Menu/getMenuByUsername',
 			type: "POST",
+			data: {username:username},
 			xhrFields: {
 				withCredentials: true //允许跨域认证
 			},
@@ -164,3 +166,4 @@ function showImg() {
 		});
 	});
 }
+

@@ -60,6 +60,7 @@ public class QuestionController {
 			res.setSuccess(true);
 			res.setMsg("添加成功");
 		}catch (Exception e) {
+			e.printStackTrace();
 			res.setSuccess(false);
 			res.setMsg("添加失败，请稍后再试");
 		}
@@ -81,6 +82,7 @@ public class QuestionController {
 	//更新问题
 	@PostMapping("/updateQuestion")
 	public ReturnRes updateQuestion(Question question) {
+		System.out.println("############type:"+question.getType());
 		ReturnRes res = new ReturnRes();
 		try {
 			questionServiceimpl.updateQuestion(question);

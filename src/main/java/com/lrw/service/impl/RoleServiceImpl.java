@@ -1,6 +1,7 @@
 package com.lrw.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -45,9 +46,13 @@ public class RoleServiceImpl implements RoleService{
 
 
 	@Override
-	public List<Role> findAllRolePlus() {
-		// TODO Auto-generated method stub
-		return roleMapper.findAllRolePlus();
+	public List<Role> findAllRolePlus(Integer id) {
+		List<Map> mapList = roleMapper.isSuperAdmin(id);
+		if(mapList!=null&&mapList.size()>0) { //超管
+			return roleMapper.findAllRolePlus();
+		}else {//普通管理员
+			return roleMapper.listRoleNotInSuperAdmin();
+		}
 	}
 
 

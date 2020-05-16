@@ -12,6 +12,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lrw.mapper.QuestionMapper;
+import com.lrw.mapper.QuestionTypeMapper;
 import com.lrw.service.QuestionService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
@@ -21,6 +22,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
 	private QuestionMapper questionMapper;
+    @Autowired
+    private QuestionTypeMapper questionTypeMapper;
 	
     //查询操作，基本查询都走这个方法
     //keyword 默认为空
@@ -50,6 +53,11 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public void updateQuestion(Question question) {
+		int type =question.getType();
+		if(type!=0) {
+			String questionType = questionTypeMapper.findQuestionTypeNameByType(type);
+			question.setQuestiontype(questionType);
+		}
 		questionMapper.updateQuestion(question);
 	}
 	
@@ -65,7 +73,7 @@ public class QuestionServiceImpl implements QuestionService {
 		res.setNumber(page.getTotal());
 		res.setCount(page.getTotal());
 		return res;
-	}
+	}	
 
 	@Override
 	public int findSelectQuestion() {

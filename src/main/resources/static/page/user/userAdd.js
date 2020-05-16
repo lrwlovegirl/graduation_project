@@ -12,7 +12,7 @@ layui.use(['form','layer'],function(){
 			//弹出loading
 			var index = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
 			 //实际使用时的提交信息
-			 $.post("http://10.2.244.72:8080/User/addUser",{
+			 $.post("http://localhost:8080/User/addUser",{
 			     username : $(".userName").val(),  //登录名
 				 password : $(".password").val(),
 			     email : $(".userEmail").val(),  //邮箱

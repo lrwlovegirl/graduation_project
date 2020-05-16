@@ -38,5 +38,7 @@ public interface UserService {
 	  
 	  void changePassword(String username, String password);
 	  
+	  boolean isRepateUser(String username);
 	  
+	  PageListRes findAllAdmin(QueryVo qv);
 }

@@ -69,5 +69,13 @@
     <update id="changePassword">
        update user set password=#{password} where username = #{username}
     </update>
+    
+    <select id="isRepateUser" parameterType="string" resultType="com.lrw.vo.User">
+       select * from user where username =#{username}
+    </select>
+    
+    <select id="findAllAdmin" parameterType="com.lrw.util.QueryVo" resultType="com.lrw.vo.User">
+     SELECT * FROM user WHERE id in (select DISTINCT uid from user_role where rid =2 )
+    </select>
 
 </mapper>  

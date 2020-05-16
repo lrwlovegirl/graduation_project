@@ -24,4 +24,6 @@ public interface QuestionBankMapper {
 
 	List<QuestionBank> selectAllEnableQBByUserName(String username);
 
+	QuestionBank isRepeateName(String name, String username);
+
 }

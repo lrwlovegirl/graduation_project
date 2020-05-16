@@ -1,26 +1,24 @@
-layui.use(['form', 'layer', 'table', 'laytpl'], function() {
+layui.use(['form', 'layer', 'table', 'laytpl','upload'], function() {
 	var form = layui.form,
 		layer = parent.layer === undefined ? layui.layer : top.layer,
 		$ = layui.jquery,
 		laytpl = layui.laytpl,
+		upload = layui.upload;
 		table = layui.table;
-
+        var publisher = getCookie("username");
 	//题库列表
-	var tableIns = table.render({
+	table.render({
 		elem: '#questionList',
-		url: 'http://10.2.244.72:8080/Question/queryQuestionByKeyword',
+		url: 'http://localhost:8080/Question/queryQuestionByKeyword',
 		cellMinWidth: 95,
+		//toolbar: '#exportOut',
 		method:"post",
-		page: {
-			layout: ['count', 'prev', 'page', 'next'],
-			curr: 1, //设定初始在第 1 页
-			limit: 10, //每页多少数据
-			groups: 5 //只显示 5 个连续页码
-		},
-		height: "full-125",
-		limits: [10, 15, 20, 25],
-		limit: 20,
-		id: "questionListTable",
+		id:'questionListTable',
+		where:{publisher:publisher},
+		page: true,
+		//height: "full-125",
+		// limits: [5,10, 15, 20, 25],
+		// limit: 10,
 		cols: [
 			[{
 					type: "checkbox",
@@ -38,31 +36,14 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 					title: '题目'
 				},
 				{
-					field: 'type',
+					field: 'questiontype',
 					title: '题目类型',
 					align: 'center',
-					templet: function(d) {
-						if (d.type == "0") {
-							return "选择题";
-						} else if (d.type == "1") {
-							return "填空题";
-						} else if (d.type == "2") {
-							return "设计题";
-						} 
-					}
 				},
 				{
 					field: 'answer',
 					title: '题目答案',
 					align: 'center'
-				},
-				{
-					field: 'masteryLevel',
-					title: '掌握程度',
-					align: 'center',
-					templet: function(d) {
-						return d.masteryLevel*100+"%"
-					}
 				},
 				{
 					field: 'difficultyLevel',
@@ -79,8 +60,12 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 					}
 				},
 				{
-					field: 'publisher',
-					title: '出题人',
+					field: 'birthday',
+					title: '添加时间',
+					align: 'center'
+					// templet: function(d) {
+					// 	return d.masteryLevel*100+"%"
+					// }
 				},
 				{
 					title: '操作',
@@ -92,18 +77,75 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			]
 		]
 	});
-
-	//关键词搜索
-	$(".search_btn").on("click", function() {
-		
+	//列表操作
+	table.on('tool(questionList)', function(obj) {
+		var layEvent = obj.event,
+			data = obj.data;
+		if (layEvent === 'edit') { //编辑
+			editQuestion(data);
+		}
 	});
+	//批量导出
+	$("#exportOutImpl").click(function() {
+		var checkStatus = table.checkStatus('questionListTable');
+		if(checkStatus.data.length===0){
+			layer.msg("请选择要导出的数据",{time:2000});
+		}else{
+			var qids=[];
+			for(var x=0;x<checkStatus.data.length;x++){
+				qids.push(checkStatus.data[x].qid)
+			};
+			console.log(qids);
+			$.post("http://localhost:8080/export/exportQuestion",{qids:qids},function(res){
+				layer.msg(res.msg,{time:1000});
+		  })
+		}
+	})
+	//批量导入
+	 upload.render({ //允许上传的文件后缀
+	    elem: '#excel'
+	    ,url: 'http://localhost:8080/export/exportInQuestion'
+	    ,accept: 'file' //普通文件
+	    ,exts: 'xlsx|xls' //只允许上传excel文件
+		,data: {
+           username: publisher
+         }
+	    ,done: function(res){
+	      layer.msg(res.msg,{time:2000})
+	    }
+	  });
+	
+	
+    //打开这个界面,就去向服务器请求正常启用的题型
+	$.get("http://localhost:8080/questionType/queryAllEnableQT",{username:publisher},function(data){
+			if(data!=null){
+				for(var x=0;x<data.length;x++){
+					$("#type").append("<option value="+data[x].tid+" >"+data[x].name+"</option>");
+				}
+			}
+		 form.render();	
+		})
+    //获取用户所有的题库
+    $.post("http://localhost:8080/questionBank/selectAllEnableQBByUserName",{username:publisher},function(data){
+		if(data!=null){
+			for(var x=0;x<data.length;x++){
+				$("#qbname").append("<option value="+data[x].qbid+" >"+data[x].qbname+"</option>");
+			}
+		}
+		form.render();	
+	})
 	
 	form.on("select",function(data){
 		var types = $("#type").val();
-		tableReload(types);
+		var qbid = $("#qbname").val();
+		if(types==="全部"){
+			types = null;
+		};
+		if(qbid ==="全部"){
+			qbid = null;
+		}
+		tableReload(types,qbid);
 	})
-	
-	
 	
 	//添加题目的点击事件
 	$(".addNews_btn").click(function() {
@@ -115,6 +157,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 		var index = layui.layer.open({
 			title: "添加题目",
 			type: 2,
+			area:['80%','80%'],
 			content: "questionAdd.html",
 			success: function(layero, index) {
 				var body = layui.layer.getChildFrame('body', index);
@@ -125,22 +168,15 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 				}, 500)
 			}
 		})
-		layui.layer.full(index);
-		window.sessionStorage.setItem("index", index);
+		//layui.layer.full(index);
+		//window.sessionStorage.setItem("index", index);
 		//改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
-		$(window).on("resize", function() {
-			layui.layer.full(window.sessionStorage.getItem("index"));
-		})
+		// $(window).on("resize", function() {
+		// 	layui.layer.full(window.sessionStorage.getItem("index"));
+		// })
 	}
 	
-	//列表操作
-	table.on('tool(questionList)', function(obj) {
-		var layEvent = obj.event,
-			data = obj.data;
-		if (layEvent === 'edit') { //编辑
-			editQuestion(data);
-		} 
-	});
+	
      //编辑题目信息
 	function editQuestion(data) {
 		var indexEditQuestion = layui.layer.open({
@@ -157,7 +193,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 				body.find("#about").val(data.about); //标签
 				body.find("#answer").val(data.answer); //题目答案
 				body.find("#analysis").text(data.analysis); //题目解析
-				if(data.type===0){//是选择题
+				if(data.optionA!=null&&optionB!=null){//是选择题
 					$("#selectOrText").hide();
 					$("#selectHtml").show();//将选项展示
 					body.find(".selectOptionA").val(data.optionA);
@@ -178,23 +214,22 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 			}
 		})
 	}
-	
-	function tableReload(types){
+	//表格重载
+	function tableReload(types,qbid){
+		//alert(types);
 		var tableIns = table.render({
 			elem: '#questionList',
-			url: 'http://10.2.244.72:8080/Question/queryQuestionByType',
+			url: 'http://localhost:8080/Question/queryQuestionByType',
 			cellMinWidth: 95,
+			//toolbar: '#exportOut',
 			method:"post",
 			where:{
-				type:types
+				type:types,
+				qbid:qbid,
+				publisher:publisher
 			},
-			page: {
-				layout: ['count', 'prev', 'page', 'next'],
-				curr: 1, //设定初始在第 1 页
-				limit: 10, //每页多少数据
-				groups: 5 //只显示 5 个连续页码
-			},
-			height: "full-125",
+			page:true,
+			//height: "full-125",
 			limits: [10, 15, 20, 25],
 			limit: 20,
 			id: "questionListTable",
@@ -215,18 +250,10 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 						title: '题目'
 					},
 					{
-						field: 'type',
+						field: 'questiontype',
 						title: '题目类型',
 						align: 'center',
-						templet: function(d) {
-							if (d.type == "0") {
-								return "选择题";
-							} else if (d.type == "1") {
-								return "填空题";
-							} else if (d.type == "2") {
-								return "设计题";
-							} 
-						}
+						
 					},
 					{
 						field: 'answer',
@@ -256,10 +283,6 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 						}
 					},
 					{
-						field: 'publisher',
-						title: '出题人',
-					},
-					{
 						title: '操作',
 						minWidth: 175,
 						templet: '#questionListBar',
@@ -271,8 +294,13 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 		});
 	}
 	
-	
-	
-	
+	function getCookie(name){
+	  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	  if(arr=document.cookie.match(reg)){
+		   return unescape(arr[2]);
+	  }else{
+		 return null;
+	  }
+	}
 	
 })

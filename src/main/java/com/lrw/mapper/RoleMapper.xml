@@ -9,7 +9,7 @@
 	</select>
 	
 	<select id="findAllRolePlus" resultType="com.lrw.vo.Role" >
-	 select * from role
+	 select * from role 
 	</select>
 	
 	<delete id="deleteUserRolesById" parameterType="int">
@@ -36,5 +36,16 @@
 	  insert into role (name) values (#{name}) 
 	</insert>
 	
+	<select id="isSuperAdmin" parameterType ="Integer" resultType="map">
+	   select * from user_role where uid=#{id} and rid=3
+	</select>
+	
+	<select id="listRoleNotInSuperAdmin"  resultType="com.lrw.vo.Role">
+	   select * from role where rid!=3
+	</select>
+	
+	<select id="isAdminOrSuperAdmin" parameterType ="Integer" resultType="map">
+	   select * from user_role where uid=#{id} and (rid =2 or rid =3 )
+	</select>
 	
 </mapper>  

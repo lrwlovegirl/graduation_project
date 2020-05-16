@@ -33,5 +33,9 @@
    <select id="selectAllEnableQBByUserName" parameterType="string" resultType="com.lrw.vo.QuestionBank">
         select * from questionbank where status = 0 and createuser=#{username}
    </select>
+   
+   <select id="isRepeateName" resultType="com.lrw.vo.QuestionBank">
+    select * from questionbank where status = 0 and qbname=#{name} and createuser=#{username}
+   </select>
 
 </mapper>  

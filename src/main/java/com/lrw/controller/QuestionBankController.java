@@ -51,8 +51,12 @@ public class QuestionBankController {
     public ReturnRes addQuestionBank(QuestionBank questionBank) {
 		ReturnRes res = new ReturnRes();
 		try {
-			QuestionBankServiceImpl.addQuestionBank(questionBank);
-			res.setMsg("创建成功");
+			if(QuestionBankServiceImpl.isRepeateName(questionBank.getQbname(), questionBank.getCreateuser())) {
+				QuestionBankServiceImpl.addQuestionBank(questionBank);
+				res.setMsg("创建成功");
+			}else {
+				res.setMsg("题库名称重复啦，换一个吧");
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 			res.setMsg("创建失败，请稍后再试");

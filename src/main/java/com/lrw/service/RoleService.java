@@ -14,7 +14,7 @@ public interface RoleService {
 
 	List<Role> queryRoleById(Integer id);
 	
-	List<Role> findAllRolePlus();
+	List<Role> findAllRolePlus(Integer id);
 
 	void deleteUserRolesById(Integer id);
 

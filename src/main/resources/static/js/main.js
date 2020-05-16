@@ -2,13 +2,21 @@
 var newDate = '';
 getLangDate();
 var lastLoginTime="2019-12-10"
-
-
 //值小于10时，在前面补0
 function dateFilter(date){
     if(date < 10){return "0"+date;}
     return date;
 }
+//获取cookie
+function getCookie(name){
+  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+  if(arr=document.cookie.match(reg)){
+	   return unescape(arr[2]);
+  }else{
+	 return null;
+  }
+}
+
 function getLangDate(){
     var dateObj = new Date(); //表示当前系统时间的Date对象
     var year = dateObj.getFullYear(); //当前系统时间的完整年份值
@@ -21,10 +29,14 @@ function getLangDate(){
     var minute = dateObj.getMinutes(); //当前系统时间的分钟值
     var second = dateObj.getSeconds(); //当前系统时间的秒钟值
     var timeValue = "" +((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午" ); //当前时间属于上午、晚上还是下午
-    newDate = dateFilter(year)+"年"+dateFilter(month)+"月"+dateFilter(date)+"日 "+" "+dateFilter(hour)+":"+dateFilter(minute)+":"+dateFilter(second);
-    document.getElementById("nowTime").innerHTML = "亲爱的不知西向东，"+timeValue+"好，当前时间为： "+newDate+"　"+week+"        "+"上次登录时间为: "+lastLoginTime;
+    var username = getCookie("username");
+	newDate = dateFilter(year)+"年"+dateFilter(month)+"月"+dateFilter(date)+"日 "+" "+dateFilter(hour)+":"+dateFilter(minute)+":"+dateFilter(second);
+    document.getElementById("nowTime").innerHTML = "亲爱的"+username+","+timeValue+"好，当前时间为： "+newDate+"　"+week+"        "+",上次登录时间为: "+lastLoginTime;
     setTimeout("getLangDate()",1000);
 }
+
+
+
 
 layui.use(['form','element','layer','jquery'],function(){
     var form = layui.form,
@@ -56,10 +68,4 @@ layui.use(['form','element','layer','jquery'],function(){
             }
         })
     }
-   
-
-   
-
-    
-
 })

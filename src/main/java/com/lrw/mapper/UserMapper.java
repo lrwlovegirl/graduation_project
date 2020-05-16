@@ -3,6 +3,7 @@ package com.lrw.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import com.lrw.util.QueryVo;
 import com.lrw.vo.User;
@@ -37,6 +38,10 @@ public interface UserMapper {
   void updateUserLastLoginTime(String username,String time);
   
   void changePassword(String username, String password);
+  
+  User isRepateUser(String username);
+  
+  List<User> findAllAdmin(QueryVo qv);
   
   
 }

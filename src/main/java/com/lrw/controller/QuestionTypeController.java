@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lrw.service.QuestionService;
 import com.lrw.service.QuestionTypeService;
 import com.lrw.util.PageListRes;
 import com.lrw.util.QueryVo;
 import com.lrw.util.ReturnRes;
+import com.lrw.vo.Question;
 import com.lrw.vo.QuestionType;
 
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +29,8 @@ public class QuestionTypeController {
 
 	@Autowired
 	private QuestionTypeService questionTypeServiceImpl;
+	@Autowired
+	private QuestionService questionService;
 	
 	
 	@ApiOperation("查询出每个人创建的题类型")
@@ -95,9 +99,24 @@ public class QuestionTypeController {
     
     @ApiOperation("查询出所有可用的题型")
     @GetMapping("/queryAllEnableQT")
-    public List<QuestionType> queryAllEnableQT(@RequestParam("username")@Nullable String username){
+    public List<QuestionType> queryAllEnableQT(  @RequestParam("username")@Nullable String username){
+//    	Question question = questionService.findQuestionByQid(qid);
+//    	String question
+//    	if(question!=null) {
+//    		
+//    	}
     	List<QuestionType> listAllEnableQT = questionTypeServiceImpl.queryAllEnableQT(username);
     	return listAllEnableQT;
     }
-
+    
+    @PostMapping("/isSelectType")
+    public boolean isSelectType(int type) {
+    	System.out.println("###########执行了######################");
+    	String questionType = questionTypeServiceImpl.findQuestionTypeNameByType(type);
+    	if(null!=questionType&&questionType.contains("选")) {
+    		return true;
+    	}
+    	return false;
+    }
+    
 }

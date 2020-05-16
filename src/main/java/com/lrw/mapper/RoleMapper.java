@@ -1,6 +1,7 @@
 package com.lrw.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -28,4 +29,10 @@ public interface RoleMapper {
 	Role findRoleByName(@NotNull String rname);
 
 	void addRole(@NotNull String rname);
+	
+	List<Map> isSuperAdmin(Integer id);
+	
+	List<Role> listRoleNotInSuperAdmin();
+	
+	List<Map> isAdminOrSuperAdmin(Integer id);
 }

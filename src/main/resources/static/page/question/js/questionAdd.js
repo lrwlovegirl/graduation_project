@@ -4,6 +4,10 @@ layui.use(['form','layer','layedit'],function(){
 		layedit = layui.layedit,
         $ = layui.jquery;
 		form.render();
+		var username =getCookie("username")
+		
+		
+		
     form.on("submit(addQuestion)",function(data){
 		var title=$("#title").val();
 		var about=$("#about").val();
@@ -16,15 +20,16 @@ layui.use(['form','layer','layedit'],function(){
 		var optionB = $(".selectOptionB").val();
 		var optionC = $(".selectOptionC").val();
 		var optionD = $(".selectOptionD").val();
+		var qbank = $("#qbank").val();
 	   //弹出loading
 	   //var index = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
 	    //实际使用时的提交信息
 		$.ajax({
-				url: "http://10.2.244.72:8080/Question/createQuestion",
+				url: "http://localhost:8080/Question/createQuestion",
 				data: {
-					title : title,  //登录名
+					title : title,  
 					about : about,
-					type : type,  //邮箱
+					type : type,  
 					difficultyLevel : difficultyLevel,  //性别
 					content : content,  //会员等级
 					answer : answer,    //用户状态
@@ -32,7 +37,9 @@ layui.use(['form','layer','layedit'],function(){
 					optionB : optionB ,
 					optionC : optionC ,
 					optionD : optionD ,
-					analysis : analysis
+					analysis : analysis,
+					publisher: username,
+					qbid:qbank
 				},
 				dataType: "json",
 				type: "post",
@@ -52,6 +59,45 @@ layui.use(['form','layer','layedit'],function(){
 			})
 			 return false;
     })
+	//获取所有的可用题型
+	$.get("http://localhost:8080/questionType/queryAllEnableQT",{username:username},function(data){
+		if(data!=null){
+			for(var x=0;x<data.length;x++){
+				$("#type").append("<option value="+data[x].tid+" >"+data[x].name+"</option>");
+			}
+		}
+		form.render();
+	})
+	//获取所有的知识点
+	$.post("http://localhost:8080/kpoint/findAllKpoint",{username:username},function(data){
+		if(data!=null){
+			for(var x=0;x<data.length;x++){
+				$("#about").append("<option value="+data[x].kname+" >"+data[x].kname+"</option>");
+			}
+		}
+		form.render();
+	})
+	//获取该用户所有的题库
+	$.post("http://localhost:8080/questionBank/selectAllEnableQBByUserName",{username:username},function(data){
+		if(data!=null){
+			for(var x=0;x<data.length;x++){
+				$("#qbank").append("<option value="+data[x].qbid+" >"+data[x].qbname+"</option>");
+			}
+		}
+	})
+	
+	function getCookie(name){
+	  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	  if(arr=document.cookie.match(reg)){
+		   return unescape(arr[2]);
+	  }else{
+		 //
+		 return null;
+	  }
+	}
+	
+	
+	
 	
 	//题目类型点击事件
 	var selectHtml =`
@@ -90,17 +136,32 @@ var textHtml=`
 			</div>
 		</div>
 `;
-	form.on("select",function(data){
-		if(data.value==0){//选择题
-			$("#selectOrText").empty();
-			$("#selectOrText").append(selectHtml);
-		}else if(data.value==1){ //填空题
-			$("#selectOrText").empty();
-			$("#selectOrText").append(textHtml);
-		}else if(data.value==2){//设计题
-			$("#selectOrText").empty();
-			$("#selectOrText").append(textHtml);
-		}
+	form.on("select(questiontypeFilter)",function(data){
+		var type = data.value;
+		$.post("http://localhost:8080/questionType/isSelectType",{type:type},function(res){
+			if(res){
+				$("#selectOrText").empty();
+				$("#selectOrText").append(selectHtml);
+			}else{
+				$("#selectOrText").empty();
+				$("#selectOrText").append(textHtml);
+			}
+		})
+		
+		// if(data.value==1){//选择题
+		// 	$("#selectOrText").empty();
+		// 	$("#selectOrText").append(selectHtml);
+		// }else{
+		// 	$("#selectOrText").empty();
+		// 	$("#selectOrText").append(textHtml);
+		// }
+		// else if(data.value==1){ //填空题
+		// 	$("#selectOrText").empty();
+		// 	$("#selectOrText").append(textHtml);
+		// }else if(data.value==2){//设计题
+		// 	$("#selectOrText").empty();
+		// 	$("#selectOrText").append(textHtml);
+		// }
 	})
 
    

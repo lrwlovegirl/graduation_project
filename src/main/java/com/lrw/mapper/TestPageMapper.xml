@@ -40,8 +40,8 @@
      select count(*) FROM ( select count(*) FROM tp_qt where tpid=#{tpid}  GROUP BY type ) as type 
     </select>
     
-    <select id="findTypeListByTpid" resultType="int">
-       SELECT DISTINCT type FROM tp_qt 
+    <select id="findTypeListByTpid" resultType="int" parameterType="string">
+       SELECT DISTINCT type FROM tp_qt where tpid=#{tpid}
     </select>
     
     <delete id="deleteTestPaperByTpid" parameterType="string">

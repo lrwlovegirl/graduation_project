@@ -11,7 +11,7 @@ layui.use(['form','layer','upload','laydate',"address"],function(){
         upload = layui.upload,
         laydate = layui.laydate,
         address = layui.address;
-
+    var username = getCookie("username");
     //上传头像
     upload.render({
         elem: '.userFaceBtn',
@@ -38,16 +38,24 @@ layui.use(['form','layer','upload','laydate',"address"],function(){
         format: 'yyyy年MM月dd日',
         trigger: 'click',
         max : 0,
-        mark : {"0-12-15":"生日"},
+        mark : {"0-10-04":"生日"},
         done: function(value, date){
-            if(date.month === 12 && date.date === 15){ //点击每年12月15日，弹出提示语
-                layer.msg('今天是马哥的生日，也是layuicms2.0的发布日，快来送上祝福吧！');
+            if(date.month === 10 && date.date === 4){ //点击每年12月15日，弹出提示语
+                layer.msg('今天是我爱人的生日，快来送上祝福吧！--刘仁旺');
             }
         }
     });
 
     //获取省信息
     address.provinces();
+
+    //获取登录信息,进行html渲染
+    $.post("http://localhost:8080/User/findUserByUsername",{username:username},function(res){
+		console.log(res);
+		$("#username").attr("value",username);
+		form.render();
+	})
+
 
     //提交个人资料
     form.on("submit(changeUser)",function(data){
@@ -77,15 +85,14 @@ layui.use(['form','layer','upload','laydate',"address"],function(){
         },2000);
         return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
     })
-
-    //修改密码
-    form.on("submit(changePwd)",function(data){
-        var index = layer.msg('提交中，请稍候',{icon: 16,time:false,shade:0.8});
-        setTimeout(function(){
-            layer.close(index);
-            layer.msg("密码修改成功！");
-            $(".pwd").val('');
-        },2000);
-        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-    })
+	//读cookie
+    function getCookie(name){
+	      var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	      if(arr=document.cookie.match(reg)){
+		       return unescape(arr[2]);
+	      }else{
+		      return null;
+	      }
+	}
+   
 })
